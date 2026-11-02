@@ -121,30 +121,55 @@ namespace LAB03
 
         // Cập nhật giao diện an toàn giữa các luồng
         private void AppendMessage(string message)
-        {
-            if (IsDisposed || !IsHandleCreated)
-                return;
+{
+    // Kiểm tra xem Form đã bị hủy hay Handle chưa được tạo / đang đóng chưa
+    if (IsDisposed || !IsHandleCreated)
+        return;
 
-            if (InvokeRequired)
+    if (InvokeRequired)
+    {
+        try
+        {
+            // Dùng Invoke hoặc BeginInvoke nhưng bọc try-catch bên trong delegate
+            BeginInvoke(new Action(() =>
             {
                 try
                 {
-                    BeginInvoke(new Action(() =>
+                    if (!IsDisposed && IsHandleCreated)
                     {
-                        if (!IsDisposed)
-                            lstReceivedMessages.Items.Add(message);
-                    }));
+                        lstReceivedMessages.Items.Add(message);
+
+                        // Tự động cuộn xuống mục mới nhất trong ListView
+                        int lastIndex = lstReceivedMessages.Items.Count - 1;
+                        if (lastIndex >= 0)
+                        {
+                            lstReceivedMessages.EnsureVisible(lastIndex);
+                        }
+                    }
+                }
+                catch (ObjectDisposedException)
+                {
+                    // Form đã đóng trong lúc chờ thực thi lệnh
                 }
                 catch (InvalidOperationException)
                 {
-                    // Form đang đóng.
+                    // Handle đã bị hủy
                 }
-            }
-            else
-            {
-                lstReceivedMessages.Items.Add(message);
-            }
+            }));
         }
+        catch (InvalidOperationException)
+        {
+            // Bắt lỗi nếu gọi BeginInvoke vào thời điểm Handle đang bị hủy
+        }
+    }
+    else
+    {
+        if (!IsDisposed && IsHandleCreated)
+        {
+            lstReceivedMessages.Items.Add(message);
+        }
+    }
+}
 
         // Nút Thoát
         private void btnServerExit_Click(object sender, EventArgs e)
