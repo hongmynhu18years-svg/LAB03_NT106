@@ -118,40 +118,76 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Download Vector background in the concept of technology_ for free" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Download Vector background in the concept of technology_ for free.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Download Modern Background Technology Realistic Glossy Hexagonal Metallic Purple and Dark for free" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Download Modern Background Technology Realistic Glossy Hexagonal Metallic Purple and Dark for free.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Baixar fundo de tecnologia mínimo preto e azul escuro projeto moderno abstrato da textura_ fundo futurista de conceito de inovação tecnológica moderna gratuitamente" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Baixar fundo de tecnologia mínimo preto e azul escuro projeto moderno abstrato da textura_ fundo futurista de conceito de inovação tecnológica moderna gratuitamente.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Partículas De Tecnologia Abstratas Fundo De Malha Papel De Parede Vertical Tela Papel de Parede Para Download Gratuito - Pngtree" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Partículas De Tecnologia Abstratas Fundo De Malha Papel De Parede Vertical Tela Papel de Parede Para Download Gratuito - Pngtree.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="saalim5226 photos, images, assets" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\saalim5226 photos, images, assets.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ok" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ok.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Baixar fundo de tecnologia mínimo preto e azul escuro projeto moderno abstrato da textura_ fundo futurista de conceito de inovação tecnológica moderna gratuitamente1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Baixar fundo de tecnologia mínimo preto e azul escuro projeto moderno abstrato da textura_ fundo futurista de conceito de inovação tecnológica moderna gratuitamente1.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Download Modern Background Technology Realistic Glossy Hexagonal Metallic Purple and Dark for free1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Download Modern Background Technology Realistic Glossy Hexagonal Metallic Purple and Dark for free1.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="download (19)" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\download (19).jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="download (20)" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\download (20).jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="hud quadros azul do utilizador interface elementos Projeto moderno tecnologia futurista ao controle painel tela digital holograma janela jogos cardápio tocante cyber monitor conjunto em Preto fundo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\hud quadros azul do utilizador interface elementos Projeto moderno tecnologia futurista ao controle painel tela digital holograma janela jogos cardápio tocante cyber monitor conjunto em Preto fundo.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="images2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\images.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="abstract-dark-blue-circuit-cyber-technology-futuristic-with-monitor-screen-blank-space-design-modern-creative-background-vector1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\abstract-dark-blue-circuit-cyber-technology-futuristic-with-monitor-screen-blank-space-design-modern-creative-background-vector.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Baixar fundo de tecnologia mínimo preto e azul escuro projeto moderno abstrato da textura_ fundo futurista de conceito de inovação tecnológica moderna gratuitamente" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Baixar fundo de tecnologia mínimo preto e azul escuro projeto moderno abstrato da textura_ fundo futurista de conceito de inovação tecnológica moderna gratuitamente.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Download Modern Background Technology Realistic Glossy Hexagonal Metallic Purple and Dark for free" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Download Modern Background Technology Realistic Glossy Hexagonal Metallic Purple and Dark for free.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Download Modern Background Technology Realistic Glossy Hexagonal Metallic Purple and Dark for free2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Download Modern Background Technology Realistic Glossy Hexagonal Metallic Purple and Dark for free.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="abstract-dark-blue-circuit-cyber-technology-futuristic-with-monitor-screen-blank-space-design-modern-creative-background-vector" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\abstract-dark-blue-circuit-cyber-technology-futuristic-with-monitor-screen-blank-space-design-modern-creative-background-vector.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Download Modern Background Technology Realistic Glossy Hexagonal Metallic Purple and Dark for free1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Download Modern Background Technology Realistic Glossy Hexagonal Metallic Purple and Dark for free1.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="saalim5226 photos, images, assets" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\saalim5226 photos, images, assets.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="images1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\images.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Download Vector background in the concept of technology_ for free" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Download Vector background in the concept of technology_ for free.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="360_F_1646585193_McFWeW87UkbYnTqm8BTkiKZAGQO0E4QL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\360_F_1646585193_McFWeW87UkbYnTqm8BTkiKZAGQO0E4QL.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="download (21)" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\download (21).jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="download (19)" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\download (19).jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Partículas De Tecnologia Abstratas Fundo De Malha Papel De Parede Vertical Tela Papel de Parede Para Download Gratuito - Pngtree" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Partículas De Tecnologia Abstratas Fundo De Malha Papel De Parede Vertical Tela Papel de Parede Para Download Gratuito - Pngtree.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ok" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ok.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="images" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\images.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="download (20)" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\download (20).jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

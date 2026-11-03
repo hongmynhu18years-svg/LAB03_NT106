@@ -63,6 +63,88 @@ namespace LAB03.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI {
+            get {
+                object obj = ResourceManager.GetObject("240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI1 {
+            get {
+                object obj = ResourceManager.GetObject("240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI2 {
+            get {
+                object obj = ResourceManager.GetObject("240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI3 {
+            get {
+                object obj = ResourceManager.GetObject("240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI4 {
+            get {
+                object obj = ResourceManager.GetObject("240_F_1661858452_xa7JJqJPWlDqdD5h9wjISHWQWhOpmbeI4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _360_F_1646585193_McFWeW87UkbYnTqm8BTkiKZAGQO0E4QL {
+            get {
+                object obj = ResourceManager.GetObject("360_F_1646585193_McFWeW87UkbYnTqm8BTkiKZAGQO0E4QL", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap abstract_dark_blue_circuit_cyber_technology_futuristic_with_monitor_screen_blank_space_design_modern_creative_background_vector {
+            get {
+                object obj = ResourceManager.GetObject("abstract-dark-blue-circuit-cyber-technology-futuristic-with-monitor-screen-blank-" +
+                        "space-design-modern-creative-background-vector", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap abstract_dark_blue_circuit_cyber_technology_futuristic_with_monitor_screen_blank_space_design_modern_creative_background_vector1 {
+            get {
+                object obj = ResourceManager.GetObject("abstract-dark-blue-circuit-cyber-technology-futuristic-with-monitor-screen-blank-" +
+                        "space-design-modern-creative-background-vector1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Baixar_fundo_de_tecnologia_mínimo_preto_e_azul_escuro_projeto_moderno_abstrato_da_textura__fundo_futurista_de_conceito_de_inovação_tecnológica_moderna_gratuitamente {
             get {
                 object obj = ResourceManager.GetObject("Baixar fundo de tecnologia mínimo preto e azul escuro projeto moderno abstrato da" +
@@ -139,6 +221,17 @@ namespace LAB03.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Download_Modern_Background_Technology_Realistic_Glossy_Hexagonal_Metallic_Purple_and_Dark_for_free2 {
+            get {
+                object obj = ResourceManager.GetObject("Download Modern Background Technology Realistic Glossy Hexagonal Metallic Purple " +
+                        "and Dark for free2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Download_Vector_background_in_the_concept_of_technology__for_free {
             get {
                 object obj = ResourceManager.GetObject("Download Vector background in the concept of technology_ for free", resourceCulture);
@@ -154,6 +247,36 @@ namespace LAB03.Properties {
                 object obj = ResourceManager.GetObject("hud quadros azul do utilizador interface elementos Projeto moderno tecnologia fut" +
                         "urista ao controle painel tela digital holograma janela jogos cardápio tocante c" +
                         "yber monitor conjunto em Preto fundo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap images {
+            get {
+                object obj = ResourceManager.GetObject("images", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap images1 {
+            get {
+                object obj = ResourceManager.GetObject("images1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap images2 {
+            get {
+                object obj = ResourceManager.GetObject("images2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
