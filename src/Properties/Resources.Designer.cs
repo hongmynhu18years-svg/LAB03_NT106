@@ -169,6 +169,26 @@ namespace LAB03.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap cinema {
+            get {
+                object obj = ResourceManager.GetObject("cinema", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap cinema1 {
+            get {
+                object obj = ResourceManager.GetObject("cinema1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap download__19_ {
             get {
                 object obj = ResourceManager.GetObject("download (19)", resourceCulture);
@@ -242,6 +262,76 @@ namespace LAB03.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Gemini_Generated_Gif_52bpar52bpar52bp {
+            get {
+                object obj = ResourceManager.GetObject("Gemini_Generated_Gif_52bpar52bpar52bp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Gemini_Generated_Gif_52bpar52bpar52bp1 {
+            get {
+                object obj = ResourceManager.GetObject("Gemini_Generated_Gif_52bpar52bpar52bp1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Gemini_Generated_Gif_9k0t609k0t609k0t {
+            get {
+                object obj = ResourceManager.GetObject("Gemini_Generated_Gif_9k0t609k0t609k0t", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Gemini_Generated_Gif_j8cnlfj8cnlfj8cn {
+            get {
+                object obj = ResourceManager.GetObject("Gemini_Generated_Gif_j8cnlfj8cnlfj8cn", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Gemini_Generated_Gif_r7m1tgr7m1tgr7m1 {
+            get {
+                object obj = ResourceManager.GetObject("Gemini_Generated_Gif_r7m1tgr7m1tgr7m1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Gemini_Generated_Image_6456hv6456hv6456 {
+            get {
+                object obj = ResourceManager.GetObject("Gemini_Generated_Image_6456hv6456hv6456", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Gemini_Generated_Image_6456hv6456hv64561 {
+            get {
+                object obj = ResourceManager.GetObject("Gemini_Generated_Image_6456hv6456hv64561", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap hud_quadros_azul_do_utilizador_interface_elementos_Projeto_moderno_tecnologia_futurista_ao_controle_painel_tela_digital_holograma_janela_jogos_cardápio_tocante_cyber_monitor_conjunto_em_Preto_fundo {
             get {
                 object obj = ResourceManager.GetObject("hud quadros azul do utilizador interface elementos Projeto moderno tecnologia fut" +
@@ -308,6 +398,46 @@ namespace LAB03.Properties {
         internal static System.Drawing.Bitmap saalim5226_photos__images__assets {
             get {
                 object obj = ResourceManager.GetObject("saalim5226 photos, images, assets", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Screenshot_2026_10_15_013803 {
+            get {
+                object obj = ResourceManager.GetObject("Screenshot 2026-10-15 013803", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Screenshot_2026_10_15_014023 {
+            get {
+                object obj = ResourceManager.GetObject("Screenshot 2026-10-15 014023", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Screenshot_2026_10_15_014225 {
+            get {
+                object obj = ResourceManager.GetObject("Screenshot 2026-10-15 014225", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Screenshot_2026_10_15_014406 {
+            get {
+                object obj = ResourceManager.GetObject("Screenshot 2026-10-15 014406", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

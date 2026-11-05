@@ -35,7 +35,8 @@ namespace LAB03
 
         private void btnBai4_Click(object sender, EventArgs e)
         {
-
+            Lab03_Bai04 Form = new Lab03_Bai04();
+            Form.Show();
         }
 
         private void btnBai5_Click(object sender, EventArgs e)
