@@ -41,7 +41,15 @@ namespace LAB03
 
         private void btnBai5_Click(object sender, EventArgs e)
         {
+            Server serverForm = new Server();
+            serverForm.StartPosition = FormStartPosition.Manual;
+            serverForm.Location = new Point(50, 100);
+            serverForm.Show();
 
+            Lab03_Bai05 clientForm = new Lab03_Bai05();
+            clientForm.StartPosition = FormStartPosition.Manual;
+            clientForm.Location = new Point(serverForm.Right + 20, 100);
+            clientForm.Show();
         }
 
         private void btnBai6_Click(object sender, EventArgs e)
