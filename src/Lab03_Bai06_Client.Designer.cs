@@ -41,6 +41,7 @@
             txtMessage = new TextBox();
             btnSend = new Button();
             lblMessage = new Label();
+            btnDK = new Button();
             SuspendLayout();
             // 
             // lblClient
@@ -141,6 +142,7 @@
             lstChat.ScrollAlwaysVisible = true;
             lstChat.Size = new Size(1530, 580);
             lstChat.TabIndex = 7;
+            lstChat.SelectedIndexChanged += lstChat_SelectedIndexChanged;
             // 
             // cboNguoi
             // 
@@ -172,10 +174,10 @@
             txtMessage.BorderStyle = BorderStyle.FixedSingle;
             txtMessage.Font = new Font("Times New Roman", 13.875F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txtMessage.ForeColor = Color.FromArgb(234, 248, 255);
-            txtMessage.Location = new Point(627, 823);
+            txtMessage.Location = new Point(569, 823);
             txtMessage.Multiline = true;
             txtMessage.Name = "txtMessage";
-            txtMessage.Size = new Size(646, 76);
+            txtMessage.Size = new Size(702, 76);
             txtMessage.TabIndex = 10;
             // 
             // btnSend
@@ -185,7 +187,7 @@
             btnSend.FlatStyle = FlatStyle.Flat;
             btnSend.Font = new Font("Times New Roman", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnSend.ForeColor = Color.FromArgb(234, 248, 255);
-            btnSend.Location = new Point(1317, 823);
+            btnSend.Location = new Point(1317, 942);
             btnSend.Name = "btnSend";
             btnSend.Size = new Size(240, 76);
             btnSend.TabIndex = 11;
@@ -199,11 +201,24 @@
             lblMessage.BackColor = Color.Transparent;
             lblMessage.Font = new Font("Times New Roman", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblMessage.ForeColor = Color.FromArgb(200, 222, 249);
-            lblMessage.Location = new Point(437, 849);
+            lblMessage.Location = new Point(399, 839);
             lblMessage.Name = "lblMessage";
             lblMessage.Size = new Size(152, 42);
             lblMessage.TabIndex = 12;
             lblMessage.Text = "Message";
+            // 
+            // btnDK
+            // 
+            btnDK.BackColor = Color.FromArgb(22, 55, 92);
+            btnDK.Font = new Font("Times New Roman", 13.875F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnDK.ForeColor = Color.FromArgb(234, 248, 255);
+            btnDK.Location = new Point(1317, 823);
+            btnDK.Name = "btnDK";
+            btnDK.Size = new Size(240, 76);
+            btnDK.TabIndex = 13;
+            btnDK.Text = "Đính kèm";
+            btnDK.UseVisualStyleBackColor = false;
+            btnDK.Click += btnDK_Click;
             // 
             // Lab03_Bai06_Client
             // 
@@ -211,7 +226,8 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = Properties.Resources.TCP_Client;
             BackgroundImageLayout = ImageLayout.Stretch;
-            ClientSize = new Size(1592, 934);
+            ClientSize = new Size(1592, 1030);
+            Controls.Add(btnDK);
             Controls.Add(lblMessage);
             Controls.Add(btnSend);
             Controls.Add(txtMessage);
@@ -249,5 +265,6 @@
         private TextBox txtMessage;
         private Button btnSend;
         private Label lblMessage;
+        private Button btnDK;
     }
 }
