@@ -46,7 +46,8 @@ namespace LAB03
 
         private void btnBai6_Click(object sender, EventArgs e)
         {
-
+            Lab03_Bai06 Form = new Lab03_Bai06();
+            Form.Show(this);
         }
 
         private void btnThoat_Click(object sender, EventArgs e)
