@@ -28,12 +28,72 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Lab03_Bai06";
+            btnOpenServer = new Button();
+            btnOpenClient = new Button();
+            btnThoat = new Button();
+            SuspendLayout();
+            // 
+            // btnOpenServer
+            // 
+            btnOpenServer.BackColor = Color.FromArgb(16, 31, 58);
+            btnOpenServer.Font = new Font("Times New Roman", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnOpenServer.ForeColor = Color.FromArgb(234, 248, 255);
+            btnOpenServer.ImageAlign = ContentAlignment.MiddleLeft;
+            btnOpenServer.Location = new Point(289, 80);
+            btnOpenServer.Name = "btnOpenServer";
+            btnOpenServer.Size = new Size(502, 118);
+            btnOpenServer.TabIndex = 0;
+            btnOpenServer.Text = "SERVER";
+            btnOpenServer.UseVisualStyleBackColor = false;
+            btnOpenServer.Click += btnOpenServer_Click;
+            // 
+            // btnOpenClient
+            // 
+            btnOpenClient.BackColor = Color.FromArgb(16, 31, 58);
+            btnOpenClient.Font = new Font("Times New Roman", 16.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnOpenClient.ForeColor = Color.FromArgb(234, 248, 255);
+            btnOpenClient.Location = new Point(289, 280);
+            btnOpenClient.Name = "btnOpenClient";
+            btnOpenClient.Size = new Size(502, 118);
+            btnOpenClient.TabIndex = 1;
+            btnOpenClient.Text = "CLIENT";
+            btnOpenClient.UseVisualStyleBackColor = false;
+            btnOpenClient.Click += btnOpenClient_Click;
+            // 
+            // btnThoat
+            // 
+            btnThoat.BackColor = Color.FromArgb(50, 24, 44);
+            btnThoat.Font = new Font("Times New Roman", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnThoat.ForeColor = Color.FromArgb(255, 214, 224);
+            btnThoat.Location = new Point(844, 476);
+            btnThoat.Name = "btnThoat";
+            btnThoat.Size = new Size(206, 82);
+            btnThoat.TabIndex = 2;
+            btnThoat.Text = "Thoát";
+            btnThoat.UseVisualStyleBackColor = false;
+            btnThoat.Click += btnThoat_Click;
+            // 
+            // Lab03_Bai06
+            // 
+            AutoScaleDimensions = new SizeF(18F, 36F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackgroundImage = Properties.Resources.TCP_CHAT_ROOM;
+            BackgroundImageLayout = ImageLayout.Stretch;
+            ClientSize = new Size(1085, 583);
+            Controls.Add(btnThoat);
+            Controls.Add(btnOpenClient);
+            Controls.Add(btnOpenServer);
+            Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "Lab03_Bai06";
+            Text = "TCP CHAT ROOM";
+            ResumeLayout(false);
         }
 
         #endregion
+
+        private Button btnOpenServer;
+        private Button btnOpenClient;
+        private Button btnThoat;
     }
 }

@@ -47,9 +47,10 @@
             lblTieuDe.ForeColor = SystemColors.ControlLightLight;
             lblTieuDe.Image = Properties.Resources.Baixar_fundo_de_tecnologia_mínimo_preto_e_azul_escuro_projeto_moderno_abstrato_da_textura__fundo_futurista_de_conceito_de_inovação_tecnológica_moderna_gratuitamente;
             lblTieuDe.ImageAlign = ContentAlignment.TopLeft;
-            lblTieuDe.Location = new Point(121, 63);
+            lblTieuDe.Location = new Point(225, 134);
+            lblTieuDe.Margin = new Padding(6, 0, 6, 0);
             lblTieuDe.Name = "lblTieuDe";
-            lblTieuDe.Size = new Size(625, 38);
+            lblTieuDe.Size = new Size(1260, 75);
             lblTieuDe.TabIndex = 0;
             lblTieuDe.Text = "LAB 03: LẬP TRÌNH SOCKET TRONG C#";
             // 
@@ -59,9 +60,10 @@
             btnBai1.BackgroundImage = Properties.Resources.saalim5226_photos__images__assets;
             btnBai1.Font = new Font("Times New Roman", 15.75F, FontStyle.Bold);
             btnBai1.ForeColor = Color.Violet;
-            btnBai1.Location = new Point(68, 156);
+            btnBai1.Location = new Point(126, 333);
+            btnBai1.Margin = new Padding(6, 6, 6, 6);
             btnBai1.Name = "btnBai1";
-            btnBai1.Size = new Size(115, 52);
+            btnBai1.Size = new Size(214, 111);
             btnBai1.TabIndex = 1;
             btnBai1.Text = "BÀI 1";
             btnBai1.UseVisualStyleBackColor = false;
@@ -72,9 +74,10 @@
             btnBai2.BackgroundImage = Properties.Resources.saalim5226_photos__images__assets;
             btnBai2.Font = new Font("Times New Roman", 15.75F, FontStyle.Bold);
             btnBai2.ForeColor = Color.Violet;
-            btnBai2.Location = new Point(367, 156);
+            btnBai2.Location = new Point(682, 333);
+            btnBai2.Margin = new Padding(6, 6, 6, 6);
             btnBai2.Name = "btnBai2";
-            btnBai2.Size = new Size(115, 52);
+            btnBai2.Size = new Size(214, 111);
             btnBai2.TabIndex = 2;
             btnBai2.Text = "BÀI 2";
             btnBai2.UseVisualStyleBackColor = true;
@@ -85,9 +88,10 @@
             btnBai3.BackgroundImage = Properties.Resources.saalim5226_photos__images__assets;
             btnBai3.Font = new Font("Times New Roman", 15.75F, FontStyle.Bold);
             btnBai3.ForeColor = Color.Violet;
-            btnBai3.Location = new Point(666, 156);
+            btnBai3.Location = new Point(1237, 333);
+            btnBai3.Margin = new Padding(6, 6, 6, 6);
             btnBai3.Name = "btnBai3";
-            btnBai3.Size = new Size(115, 52);
+            btnBai3.Size = new Size(214, 111);
             btnBai3.TabIndex = 3;
             btnBai3.Text = "BÀI 3";
             btnBai3.UseVisualStyleBackColor = true;
@@ -98,9 +102,10 @@
             btnBai4.BackgroundImage = Properties.Resources.saalim5226_photos__images__assets;
             btnBai4.Font = new Font("Times New Roman", 15.75F, FontStyle.Bold);
             btnBai4.ForeColor = Color.Violet;
-            btnBai4.Location = new Point(68, 271);
+            btnBai4.Location = new Point(126, 578);
+            btnBai4.Margin = new Padding(6, 6, 6, 6);
             btnBai4.Name = "btnBai4";
-            btnBai4.Size = new Size(115, 52);
+            btnBai4.Size = new Size(214, 111);
             btnBai4.TabIndex = 4;
             btnBai4.Text = "BÀI 4";
             btnBai4.UseVisualStyleBackColor = true;
@@ -111,9 +116,10 @@
             btnBai5.BackgroundImage = Properties.Resources.saalim5226_photos__images__assets;
             btnBai5.Font = new Font("Times New Roman", 15.75F, FontStyle.Bold);
             btnBai5.ForeColor = Color.Violet;
-            btnBai5.Location = new Point(367, 271);
+            btnBai5.Location = new Point(682, 578);
+            btnBai5.Margin = new Padding(6, 6, 6, 6);
             btnBai5.Name = "btnBai5";
-            btnBai5.Size = new Size(115, 52);
+            btnBai5.Size = new Size(214, 111);
             btnBai5.TabIndex = 5;
             btnBai5.Text = "BÀI 5";
             btnBai5.UseVisualStyleBackColor = true;
@@ -124,9 +130,10 @@
             btnBai6.BackgroundImage = Properties.Resources.saalim5226_photos__images__assets;
             btnBai6.Font = new Font("Times New Roman", 15.75F, FontStyle.Bold);
             btnBai6.ForeColor = Color.Violet;
-            btnBai6.Location = new Point(666, 271);
+            btnBai6.Location = new Point(1237, 578);
+            btnBai6.Margin = new Padding(6, 6, 6, 6);
             btnBai6.Name = "btnBai6";
-            btnBai6.Size = new Size(115, 52);
+            btnBai6.Size = new Size(214, 111);
             btnBai6.TabIndex = 6;
             btnBai6.Text = "BÀI 6";
             btnBai6.UseVisualStyleBackColor = true;
@@ -135,9 +142,10 @@
             // btnThoat
             // 
             btnThoat.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 163);
-            btnThoat.Location = new Point(724, 401);
+            btnThoat.Location = new Point(1345, 855);
+            btnThoat.Margin = new Padding(6, 6, 6, 6);
             btnThoat.Name = "btnThoat";
-            btnThoat.Size = new Size(98, 37);
+            btnThoat.Size = new Size(182, 79);
             btnThoat.TabIndex = 7;
             btnThoat.Text = "Thoát";
             btnThoat.UseVisualStyleBackColor = true;
@@ -145,11 +153,11 @@
             // 
             // Lab03_DieuHuong
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = Properties.Resources.hud_quadros_azul_do_utilizador_interface_elementos_Projeto_moderno_tecnologia_futurista_ao_controle_painel_tela_digital_holograma_janela_jogos_cardápio_tocante_cyber_monitor_conjunto_em_Preto_fundo;
             BackgroundImageLayout = ImageLayout.Stretch;
-            ClientSize = new Size(856, 450);
+            ClientSize = new Size(1590, 960);
             Controls.Add(btnThoat);
             Controls.Add(btnBai6);
             Controls.Add(btnBai5);
@@ -159,6 +167,7 @@
             Controls.Add(btnBai1);
             Controls.Add(lblTieuDe);
             ForeColor = SystemColors.ActiveCaptionText;
+            Margin = new Padding(6, 6, 6, 6);
             Name = "Lab03_DieuHuong";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Lab03_DieuHuong";
