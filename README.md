@@ -856,9 +856,10 @@ Mọi thao tác giao tiếp đều thông qua lớp `Packet` được chuyển �
 
 **2. Random món ăn (Client)**
 1. Mở giao diện Client.
-2. Nhập tên của bạn vào ô **Tên của bạn**.
-3. Chọn chế độ: **Người dùng** (Chỉ quay ra món của bạn) hoặc **Cộng đồng** (Quay ngẫu nhiên từ kho chung).
-4. Nhấn nút **Tìm**. Kết quả (tên, tác giả, hình ảnh) sẽ hiện ra ở giữa mâm gỗ.
+2. Đồng bộ dữ liệu ban đầu: Nhấn vào nút **Thêm** để mở cửa sổ **Đóng góp món ăn**, sau đó tắt đi ngay. Thao tác này sẽ kích hoạt hệ thống tải dữ liệu và hiển thị 3 món ăn mặc định lên khung Menu bên phải.
+3. Nhập tên của bạn vào ô **Tên của bạn**.
+4. Chọn chế độ: **Người dùng** (Chỉ quay ra món của bạn) hoặc **Cộng đồng** (Quay ngẫu nhiên từ kho chung).
+5. Nhấn nút **Tìm**. Kết quả (tên món, người đóng góp, hình ảnh) sẽ hiện ra ở giữa mâm gỗ.
 
 **3. Đóng góp món mới**
 1. Từ Client, nhấn nút **Thêm** để mở form Đóng góp món ăn.
