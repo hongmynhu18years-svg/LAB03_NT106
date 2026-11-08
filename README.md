@@ -780,3 +780,111 @@ Tarot_Phòng chiếu 3|B1,B3
 > - Nếu Port `8080` bị ứng dụng khác sử dụng, Server có thể không khởi động được.
 
 ---
+# 🍽️ Bài 5 — Hôm nay ăn gì? (1 Server – Multi Client)
+
+## 🖼️ Giao diện chương trình
+
+**1. Giao diện Server (`Server`)**
+![Giao diện Server](server.png)
+
+**2. Giao diện Client Chính — Random Menu (`Lab03_Bai05`)**
+![Giao diện Client](random_mon.png)
+
+**3. Giao diện Đóng góp món ăn — Tab Nhập thông tin (`Donggopmonan`)**
+![Nhập thông tin đóng góp](nhap_donggopmon.png)
+
+**4. Giao diện Đóng góp món ăn — Tab Danh sách (`Donggopmonan`)**
+![Danh sách đóng góp](thongtindonggop.png)
+
+---
+
+## 🎯 Nội dung thực hành
+
+- Xây dựng ứng dụng quản lý và đề xuất món ăn theo mô hình **1 Server – Multi Client**.
+- Sử dụng giao thức **TCP** thông qua `TcpListener` và `TcpClient` để truyền tải gói tin.
+- Quản lý tập trung dữ liệu tại Server bằng cơ sở dữ liệu **SQLite** (`data.db`).
+- Áp dụng kỹ thuật **Tuần tự hóa JSON** (`System.Text.Json`) để đóng gói dữ liệu và mã hóa hình ảnh thành chuỗi **Base64** để truyền qua mạng.
+- Áp dụng triệt để lập trình bất đồng bộ (`async`/`await`, `Task.Run`) trong tất cả các khâu đọc/ghi CSDL và NetworkStream để chống hiện tượng đơ giao diện (UI Freezing).
+- Cho phép khách hàng thêm món mới kèm hình ảnh, xem danh sách chi tiết đóng góp, xóa món ăn, và quay ngẫu nhiên (Random) theo sở thích cá nhân hoặc cộng đồng.
+
+---
+
+## 🛠️ Cách thức thực hiện
+
+### 1. Khởi tạo TCP Server và CSDL (`Server.cs`)
+- Khởi chạy Server ở cổng `8888` bằng `TcpListener(IPAddress.Any, 8888)`.
+- Dùng `Task.Run` để khởi tạo CSDL SQLite ngầm: tạo bảng `NguoiDung`, `MonAn` và chèn 3 món mặc định (Phở, Cơm tấm, Hủ tiếu).
+- Lắng nghe kết nối liên tục bằng vòng lặp `while(isRunning)` và cấp phát một `Task` riêng (`HandleClient`) cho mỗi Client mới.
+- Khai báo bộ đệm lớn `byte[1024 * 5000]` (5MB) để đảm bảo đủ dung lượng nhận chuỗi Base64 của hình ảnh.
+
+### 2. Giao diện Client Chính (`Lab03_Bai05.cs`)
+- Gửi yêu cầu `GET_LIST` ngay khi Form Load để lấy danh sách tên món và nạp vào khung `MENU` (`list_mon`).
+- Xử lý chức năng **Tìm (Random)**:
+  - Kiểm tra điều kiện đầu vào (Bắt buộc nhập tên nếu chọn chế độ "Người dùng").
+  - Đóng gói lệnh `RANDOM_ALL` hoặc `RANDOM_MINE` gửi tới Server.
+  - Nhận chuỗi JSON phản hồi, giải mã `HinhAnhBase64` thành mảng byte, đưa vào `MemoryStream` và gán cho `PictureBox` (`anh_mon.Image`).
+- Xử lý chức năng **Xóa**: Gửi lệnh `DELETE` kèm tên món, cập nhật lại Menu nếu Server trả về `DELETE_SUCCESS`.
+- Các nút bấm được khóa (`btn.Enabled = false`) trong lúc chờ tác vụ mạng chạy ngầm và mở lại ở khối `finally`.
+
+### 3. Giao diện Đóng góp món ăn (`Donggopmonan.cs`)
+- Form sử dụng `TabControl` với 2 chức năng chính: Thêm mới và Xem danh sách.
+- **Tab Nhập thông tin:** Dùng `OpenFileDialog` để chọn ảnh, đọc ảnh bằng `File.ReadAllBytes()` và chuyển sang chuỗi bằng `Convert.ToBase64String()`. Gửi gói tin `ADD` chứa tên người, tên món và ảnh.
+- **Tab Danh sách món đã thêm:** Gửi yêu cầu `GET_ALL_DETAILS` đến Server. Server dùng lệnh `JOIN` trong SQL để lấy đầy đủ chi tiết và trả về danh sách JSON. Client duyệt mảng JSON và đổ dữ liệu vào `ListView` gồm các cột: STT, Tên người, Tên món, Thời gian.
+
+---
+
+## 📊 Cấu trúc Giao thức (Packet Actions)
+
+Mọi thao tác giao tiếp đều thông qua lớp `Packet` được chuyển đổi thành định dạng JSON.
+
+| Action (Client gửi) | Tham số đi kèm | Xử lý tại Server | Phản hồi (Server gửi) |
+| :--- | :--- | :--- | :--- |
+| `ADD` | `TenMonAn`, `NguoiDongGop`, `HinhAnhBase64` | `INSERT` dữ liệu vào CSDL, lưu ảnh ra file `.png` ở thư mục `bin/Debug`. Báo lỗi nếu trùng món. | `SUCCESS` hoặc `ERROR` |
+| `DELETE` | `TenMonAn` | `DELETE` món ăn khỏi bảng `MonAn`. | `DELETE_SUCCESS` / `FAIL` |
+| `RANDOM_ALL` | *Không có* | Quay ngẫu nhiên 1 món từ toàn bộ CSDL (`ORDER BY RANDOM() LIMIT 1`). Lấy ảnh mã hóa lại thành Base64. | `RESULT` kèm Ảnh / `EMPTY` |
+| `RANDOM_MINE`| `NguoiDongGop` | Lọc món theo tên người dùng và quay ngẫu nhiên. | `RESULT` kèm Ảnh / `EMPTY` |
+| `GET_LIST` | *Không có* | `SELECT DISTINCT TenMonAn` | `LIST_RESULT` kèm JSON mảng |
+| `GET_ALL_DETAILS`| *Không có* | `SELECT ... JOIN` bảng người dùng và bảng món ăn | `DETAILS_RESULT` kèm JSON chi tiết |
+
+---
+
+## 📖 Hướng dẫn sử dụng
+
+**1. Khởi động Server**
+1. Mở ứng dụng, chọn Form Server. Nhấn nút **Bắt đầu Server**.
+2. Đợi Log thông báo "Server đã reset CSDL và đang chạy ở Port 8888...".
+
+**2. Random món ăn (Client)**
+1. Mở giao diện Client.
+2. Nhập tên của bạn vào ô **Tên của bạn**.
+3. Chọn chế độ: **Người dùng** (Chỉ quay ra món của bạn) hoặc **Cộng đồng** (Quay ngẫu nhiên từ kho chung).
+4. Nhấn nút **Tìm**. Kết quả (tên, tác giả, hình ảnh) sẽ hiện ra ở giữa mâm gỗ.
+
+**3. Đóng góp món mới**
+1. Từ Client, nhấn nút **Thêm** để mở form Đóng góp món ăn.
+2. Nhập tên người đóng góp, tên món ăn.
+3. Nhấn **Thêm hình ảnh món ăn** và chọn 1 bức ảnh từ máy tính.
+4. Nhấn **Send**. Hệ thống sẽ thông báo thành công và cập nhật món mới vào cơ sở dữ liệu.
+
+**4. Xem danh sách chi tiết**
+1. Tại form Đóng góp món ăn, chuyển sang tab **Danh sách món đã thêm**.
+2. Một bảng chi tiết sẽ hiện ra với lịch sử thời gian cụ thể của các món đã được thêm vào hệ thống.
+
+**5. Xóa món ăn**
+1. Tại giao diện Client chính, nhấp chọn một tên món ăn trong khung MENU.
+2. Nhấn nút **Xóa**.
+3. Xác nhận "Yes" để xóa món khỏi hệ thống. Khung MENU sẽ tự động cập nhật lại.
+
+---
+
+## 📁 Cấu trúc dữ liệu lưu trữ
+
+- **Cơ sở dữ liệu:** Hệ thống dùng SQLite với file `data.db` làm trung tâm lưu trữ, bao gồm 2 bảng `NguoiDung` và `MonAn` có quan hệ với nhau qua khóa ngoại `IDNCC`.
+- **Thư mục ảnh mặc định (`Resources`):** Chứa các ảnh thiết lập sẵn (Phở, Cơm tấm, Hủ tiếu).
+- **Thư mục ảnh Upload (`bin/Debug`):** Chứa các ảnh do Client tải lên, tự động sinh tên file theo định dạng `img_[Ticks].png` để tránh ghi đè.
+
+## 📝 Note
+- Client luôn kết nối trực tiếp đến IP `127.0.0.1:8888`. Để triển khai mô hình nhiều máy tính, cần chỉnh sửa IP này thành IP LAN của máy cài đặt Server.
+- Để tối ưu hóa và chống treo UI (UI Freezing), tất cả lệnh `Stream.Read`, `Stream.Write` và các lệnh truy vấn SQLite đều được đặt bên trong `await Task.Run(...)`.
+- Thuộc tính `ReceiveTimeout` và `SendTimeout` được cài đặt 3000ms (3 giây) để tự ngắt kết nối nếu mạng bị lỗi, tránh để Form Client kẹt trong trạng thái khóa nút vĩnh viễn.
+- Khi hiển thị ảnh trả về từ Server, ứng dụng tạo bản sao `Bitmap` từ `MemoryStream` thay vì gán trực tiếp để giải phóng luồng bộ nhớ, tránh tình trạng lỗi khóa tệp (File lock).
