@@ -64,7 +64,7 @@ Bài thực hành giúp sinh viên làm quen với lập trình **Socket**, tri�
 
 Tập hợp các bài thực hành Lab 3 trên một giao diện Windows Forms. Người dùng chọn bài tập từ form chính để thực hiện các chức năng từng bài tương ứng.
 
-
+<img width="853" height="476" alt="Giao diện chung" src="https://github.com/user-attachments/assets/ffbc47cc-3c59-4c7e-8bf4-7050cd26699a" />
 
 ### 🎯 Mục tiêu thực hành
 
@@ -1184,3 +1184,9 @@ ATTACH_V1|Base64(Tên file)|Base64(Nội dung file)
 > - Khi Client ngắt kết nối hoặc Server đóng, chương trình giải phóng các kết nối TCP tương ứng.
 
 ---
+
+<p align="center">
+  <b> LAB 3 – WORKING WITH SOCKETS IN C#</b>
+  <br>
+  <em> NHÓM 3 </em>
+</p>
