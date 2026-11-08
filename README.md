@@ -856,16 +856,16 @@ Mọi thao tác giao tiếp đều thông qua lớp `Packet` được chuyển �
 
 **2. Random món ăn (Client)**
 1. Mở giao diện Client.
-2. Đồng bộ dữ liệu ban đầu: Nhấn vào nút **Thêm** để mở cửa sổ **Đóng góp món ăn**, sau đó tắt đi ngay. Thao tác này sẽ kích hoạt hệ thống tải dữ liệu và hiển thị 3 món ăn mặc định lên khung Menu bên phải.
+2. Đồng bộ dữ liệu ban đầu: Nhấn vào nút `Thêm` để mở cửa sổ **Đóng góp món ăn**, sau đó tắt đi ngay. Thao tác này sẽ kích hoạt hệ thống tải dữ liệu và hiển thị 3 món ăn mặc định lên khung Menu bên phải.
 3. Nhập tên của bạn vào ô **Tên của bạn**.
 4. Chọn chế độ: **Người dùng** (Chỉ quay ra món của bạn) hoặc **Cộng đồng** (Quay ngẫu nhiên từ kho chung).
-5. Nhấn nút **Tìm**. Kết quả (tên món, người đóng góp, hình ảnh) sẽ hiện ra ở giữa mâm gỗ.
+5. Nhấn nút `Tìm`. Kết quả (tên món, người đóng góp, hình ảnh) sẽ hiện ra ở giữa mâm gỗ.
 
 **3. Đóng góp món mới**
-1. Từ Client, nhấn nút **Thêm** để mở form Đóng góp món ăn.
+1. Từ Client, nhấn nút ``Thêm`` để mở form Đóng góp món ăn.
 2. Nhập tên người đóng góp, tên món ăn.
 3. Nhấn **Thêm hình ảnh món ăn** và chọn 1 bức ảnh từ máy tính.
-4. Nhấn **Send**. Hệ thống sẽ thông báo thành công và cập nhật món mới vào cơ sở dữ liệu.
+4. Nhấn `Send`. Hệ thống sẽ thông báo thành công và cập nhật món mới vào cơ sở dữ liệu.
 
 **4. Xem danh sách chi tiết**
 1. Tại form Đóng góp món ăn, chuyển sang tab **Danh sách món đã thêm**.
@@ -873,8 +873,8 @@ Mọi thao tác giao tiếp đều thông qua lớp `Packet` được chuyển �
 
 **5. Xóa món ăn**
 1. Tại giao diện Client chính, nhấp chọn một tên món ăn trong khung MENU.
-2. Nhấn nút **Xóa**.
-3. Xác nhận "Yes" để xóa món khỏi hệ thống. Khung MENU sẽ tự động cập nhật lại.
+2. Nhấn nút `Xóa`.
+3. Xác nhận `Yes` để xóa món khỏi hệ thống. Khung MENU sẽ tự động cập nhật lại.
 
 ---
 
