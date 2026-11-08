@@ -1,8 +1,8 @@
-<h1 align="center">📡 LAB 3 – WORKING WITH SOCKETS IN C#</h1>
+<h1 align="center">🌐 LAB 3 – WORKING WITH SOCKETS IN C#</h1>
 
 <div align="center">
 
-### 🌐 LẬP TRÌNH SOCKETS TRONG C#
+### LẬP TRÌNH SOCKETS TRONG C#
 
 *Bài thực hành nhóm môn Lập trình mạng căn bản – Xây dựng ứng dụng giao tiếp Client–Server sử dụng UDP, TCP và Multithreading.*
 
@@ -87,3 +87,127 @@ Tập hợp các bài thực hành Lab 3 trên một giao diện Windows Forms. 
 | **06** | Chat Room – Nhắn tin chung và riêng | TCP Client – TCP Listener |
 
 ---
+
+## 📚 NỘI DUNG THỰC HÀNH
+
+### 📡 Bài 1 — Gửi và nhận dữ liệu bằng UDP
+
+#### 🖥️ Giao diện chương trình
+
+**1. Form điều hướng — Gửi và nhận dữ liệu**
+
+<img width="458" height="256" alt="Giao diện Form điều hướng Bài 1 " src="https://github.com/user-attachments/assets/0c43e76d-b691-4941-990f-ffd8fc384ded" />
+
+**2. Giao diện UDP Client**
+
+<img width="792" height="437" alt="Giao diện UDP Client" src="https://github.com/user-attachments/assets/a002e8ee-0bd9-45b0-9e01-659934191d17" />
+
+**3. Giao diện UDP Server**
+
+<img width="491" height="512" alt="Giao diện UDP Server" src="https://github.com/user-attachments/assets/abb634e9-b8b4-469c-b4e6-6c280eadf193" />
+
+#### 🎯 Nội dung thực hành
+
+- Xây dựng ứng dụng gửi và nhận dữ liệu giữa hai bên thông qua giao thức **UDP (User Datagram Protocol)**.
+- Cho phép người dùng tại **UDP Client** nhập địa chỉ IP, Port và thông điệp cần gửi.
+- **UDP Server** lắng nghe tại Port được chỉ định, tiếp nhận thông điệp từ Client và hiển thị trên giao diện.
+- Hỗ trợ gửi và nhận nội dung tiếng Việt có dấu thông qua mã hóa **UTF-8**.
+- Kiểm tra dữ liệu đầu vào, xử lý lỗi kết nối và quản lý tài nguyên khi đóng chương trình.
+
+#### 🛠️ Cách thức thực hiện
+
+**1. Form điều hướng (`Lab03_Bai01`)**
+
+- Khởi tạo giao diện bằng `InitializeComponent()`.
+- Sử dụng `btnServer_Click()` để mở form `Lab03_Bai01_UDPServer`.
+- Sử dụng `btnUDPCLient_Click()` để mở form `Lab03_Bai01_UDPClient`.
+- Sử dụng `btnThoat_Click()` để đóng form điều hướng.
+
+**2. UDP Client (`Lab03_Bai01_UDPClient`)**
+
+- Khởi tạo địa chỉ IP mặc định `127.0.0.1` và Port `9000` để kiểm thử trên cùng một máy.
+- Đọc địa chỉ IP từ `tbxRemoteIP`, Port từ `tbxRemotePort` và thông điệp từ `rtbMessage`.
+- Sử dụng `IPAddress.TryParse()` để kiểm tra địa chỉ IP hợp lệ.
+- Sử dụng `int.TryParse()` để kiểm tra Port trong khoảng `1–65535`.
+- Kiểm tra thông điệp không được để trống bằng `string.IsNullOrWhiteSpace()`.
+- Sử dụng `Encoding.UTF8.GetBytes()` để chuyển thông điệp thành mảng byte.
+- Khởi tạo `UdpClient` và sử dụng `Send()` để gửi dữ liệu đến IP và Port của Server.
+- Sử dụng `using` để tự động giải phóng `UdpClient` sau khi gửi.
+- Xử lý lỗi gửi dữ liệu bằng `try-catch` với `SocketException`.
+- Hiển thị thông báo sau khi thực hiện gửi và sử dụng `Close()` để thoát form.
+
+**3. UDP Server (`Lab03_Bai01_UDPServer`)**
+
+- Đọc và kiểm tra Port từ `tbxServerPort`, đảm bảo giá trị trong khoảng `1–65535`.
+- Sử dụng `new UdpClient(port)` để khởi tạo Server lắng nghe tại Port được chỉ định.
+- Sử dụng `CancellationTokenSource` để quản lý việc hủy tác vụ nhận dữ liệu.
+- Sử dụng `ReceiveMessagesAsync()` và `ReceiveAsync()` để nhận dữ liệu UDP bất đồng bộ.
+- Sử dụng `Encoding.UTF8.GetString()` để chuyển dữ liệu nhận được từ mảng byte thành chuỗi.
+- Lấy địa chỉ IP và Port của Client thông qua `result.RemoteEndPoint`.
+- Hiển thị thời gian nhận, địa chỉ IP, Port và nội dung thông điệp trên `lstReceivedMessages`.
+- Sử dụng `InvokeRequired` kết hợp `BeginInvoke()` trong `AppendMessage()` để cập nhật giao diện an toàn giữa các luồng.
+- Tự động cuộn đến thông điệp mới nhất bằng `EnsureVisible()`.
+- Vô hiệu hóa nút Listen và ô nhập Port trong lúc Server đang lắng nghe.
+- Sử dụng `Cancel()` và `Dispose()` để hủy tác vụ nhận, đóng Socket và giải phóng tài nguyên khi thoát.
+
+#### ▶️ Hướng dẫn sử dụng
+
+**1. Khởi động UDP Server**
+
+1. Mở **Bài 1** từ giao diện chính của Lab 3.
+2. Nhấn **UDP Server** để mở cửa sổ Server.
+3. Nhập Port cần lắng nghe, ví dụ `9000`.
+4. Nhấn **Listen** để bắt đầu nhận dữ liệu.
+5. Kiểm tra thông báo `Server đang lắng nghe tại Port 9000...`.
+6. Giữ cửa sổ Server hoạt động để tiếp nhận thông điệp.
+
+**2. Gửi thông điệp từ UDP Client**
+
+1. Tại form điều hướng, nhấn **UDP Client**.
+2. Nhập địa chỉ IP của Server vào ô **IP Remote host**.
+   - Cùng máy: `127.0.0.1`.
+   - Khác máy trong mạng LAN: nhập địa chỉ IPv4 của máy chạy Server.
+3. Nhập Port `9000` vào ô **Port**.
+4. Nhập nội dung cần gửi vào ô **Message**, ví dụ `Xin chào UDP Server!`.
+5. Nhấn **Send** để gửi thông điệp.
+6. Client hiển thị thông báo `Đã gửi thông điệp qua UDP!` nếu thao tác gửi không phát sinh lỗi.
+7. Kiểm tra cửa sổ Server để xem thông điệp được tiếp nhận.
+
+**3. Kiểm tra kết quả tại Server**
+
+Khi nhận được thông điệp, Server hiển thị dữ liệu theo cấu trúc:
+
+```text
+[14:30:25] 127.0.0.1:54321
+Xin chào UDP Server!
+```
+
+Trong đó:
+
+- `14:30:25`: Thời gian Server nhận thông điệp.
+- `127.0.0.1`: Địa chỉ IP của Client.
+- `54321`: Port nguồn của Client (ví dụ minh họa).
+- `Xin chào UDP Server!`: Nội dung thông điệp nhận được.
+
+**4. Thoát chương trình**
+
+1. Nhấn **Thoát** tại UDP Client để đóng cửa sổ Client.
+2. Nhấn **Thoát** tại UDP Server để dừng lắng nghe và đóng Socket.
+3. Nhấn **Thoát** tại form điều hướng để kết thúc Bài 1.
+
+> [!NOTE]
+> - UDP là giao thức không kết nối, không yêu cầu thiết lập phiên giao tiếp trước khi gửi dữ liệu.
+> - IP `127.0.0.1` chỉ dùng để giao tiếp trên cùng một máy. Khi chạy trên hai máy khác nhau trong LAN, phải sử dụng địa chỉ IP thực tế của Server.
+> - Port tại Client phải trùng với Port mà Server đang lắng nghe.
+> - Port hợp lệ nằm trong khoảng `1–65535`. Port mặc định được thiết lập tại Client là `9000`.
+> - Nên khởi động Server trước khi gửi dữ liệu từ Client.
+> - Thông điệp không được để trống hoặc chỉ chứa khoảng trắng.
+> - Chương trình hỗ trợ tiếng Việt có dấu nhờ mã hóa UTF-8.
+> - UDP không đảm bảo thông điệp luôn được chuyển đến Server. Thông báo gửi thành công tại Client không đồng nghĩa Server đã nhận dữ liệu.
+> - UDP Client sử dụng Port nguồn do hệ điều hành cấp phát, vì vậy Port nguồn hiển thị tại Server có thể thay đổi giữa các lần gửi.
+> - Khi Port đã được ứng dụng khác sử dụng, Server có thể không khởi động được và sẽ hiển thị thông báo lỗi.
+> - Khi kiểm thử trên các máy khác nhau, cần đảm bảo kết nối mạng và cấu hình tường lửa cho phép lưu lượng UDP tại Port tương ứng.
+> - Khi đóng Server, chương trình hủy tác vụ nhận dữ liệu và giải phóng Socket để tránh chiếm dụng tài nguyên.
+
+---
+
