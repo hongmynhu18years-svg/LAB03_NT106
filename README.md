@@ -780,9 +780,9 @@ Tarot_Phòng chiếu 3|B1,B3
 > - Nếu Port `8080` bị ứng dụng khác sử dụng, Server có thể không khởi động được.
 
 ---
-# 🍽️ Bài 5 — Hôm nay ăn gì? (1 Server – Multi Client)
+## 🍽️ Bài 5 — Hôm nay ăn gì? (1 Server – Multi Client)
 
-## 🖼️ Giao diện chương trình
+### 🖼️ Giao diện chương trình
 
 **1. Giao diện Server (`Server`)**
 ![Giao diện Server](server.png)
@@ -796,9 +796,7 @@ Tarot_Phòng chiếu 3|B1,B3
 **4. Giao diện Đóng góp món ăn — Tab Danh sách (`Donggopmonan`)**
 ![Danh sách đóng góp](thongtindonggop.png)
 
----
-
-## 🎯 Nội dung thực hành
+### 🎯 Nội dung thực hành
 
 - Xây dựng ứng dụng quản lý và đề xuất món ăn theo mô hình **1 Server – Multi Client**.
 - Sử dụng giao thức **TCP** thông qua `TcpListener` và `TcpClient` để truyền tải gói tin.
@@ -807,17 +805,15 @@ Tarot_Phòng chiếu 3|B1,B3
 - Áp dụng triệt để lập trình bất đồng bộ (`async`/`await`, `Task.Run`) trong tất cả các khâu đọc/ghi CSDL và NetworkStream để chống hiện tượng đơ giao diện (UI Freezing).
 - Cho phép khách hàng thêm món mới kèm hình ảnh, xem danh sách chi tiết đóng góp, xóa món ăn, và quay ngẫu nhiên (Random) theo sở thích cá nhân hoặc cộng đồng.
 
----
+### 🛠️ Cách thức thực hiện
 
-## 🛠️ Cách thức thực hiện
-
-### 1. Khởi tạo TCP Server và CSDL (`Server.cs`)
+#### 1. Khởi tạo TCP Server và CSDL (`Server.cs`)
 - Khởi chạy Server ở cổng `8888` bằng `TcpListener(IPAddress.Any, 8888)`.
 - Dùng `Task.Run` để khởi tạo CSDL SQLite ngầm: tạo bảng `NguoiDung`, `MonAn` và chèn 3 món mặc định (Phở, Cơm tấm, Hủ tiếu).
 - Lắng nghe kết nối liên tục bằng vòng lặp `while(isRunning)` và cấp phát một `Task` riêng (`HandleClient`) cho mỗi Client mới.
 - Khai báo bộ đệm lớn `byte[1024 * 5000]` (5MB) để đảm bảo đủ dung lượng nhận chuỗi Base64 của hình ảnh.
 
-### 2. Giao diện Client Chính (`Lab03_Bai05.cs`)
+#### 2. Giao diện Client Chính (`Lab03_Bai05.cs`)
 - Gửi yêu cầu `GET_LIST` ngay khi Form Load để lấy danh sách tên món và nạp vào khung `MENU` (`list_mon`).
 - Xử lý chức năng **Tìm (Random)**:
   - Kiểm tra điều kiện đầu vào (Bắt buộc nhập tên nếu chọn chế độ "Người dùng").
@@ -826,14 +822,12 @@ Tarot_Phòng chiếu 3|B1,B3
 - Xử lý chức năng **Xóa**: Gửi lệnh `DELETE` kèm tên món, cập nhật lại Menu nếu Server trả về `DELETE_SUCCESS`.
 - Các nút bấm được khóa (`btn.Enabled = false`) trong lúc chờ tác vụ mạng chạy ngầm và mở lại ở khối `finally`.
 
-### 3. Giao diện Đóng góp món ăn (`Donggopmonan.cs`)
+#### 3. Giao diện Đóng góp món ăn (`Donggopmonan.cs`)
 - Form sử dụng `TabControl` với 2 chức năng chính: Thêm mới và Xem danh sách.
 - **Tab Nhập thông tin:** Dùng `OpenFileDialog` để chọn ảnh, đọc ảnh bằng `File.ReadAllBytes()` và chuyển sang chuỗi bằng `Convert.ToBase64String()`. Gửi gói tin `ADD` chứa tên người, tên món và ảnh.
 - **Tab Danh sách món đã thêm:** Gửi yêu cầu `GET_ALL_DETAILS` đến Server. Server dùng lệnh `JOIN` trong SQL để lấy đầy đủ chi tiết và trả về danh sách JSON. Client duyệt mảng JSON và đổ dữ liệu vào `ListView` gồm các cột: STT, Tên người, Tên món, Thời gian.
 
----
-
-## 📊 Cấu trúc Giao thức (Packet Actions)
+### 📊 Cấu trúc Giao thức (Packet Actions)
 
 Mọi thao tác giao tiếp đều thông qua lớp `Packet` được chuyển đổi thành định dạng JSON.
 
@@ -846,9 +840,7 @@ Mọi thao tác giao tiếp đều thông qua lớp `Packet` được chuyển �
 | `GET_LIST` | *Không có* | `SELECT DISTINCT TenMonAn` | `LIST_RESULT` kèm JSON mảng |
 | `GET_ALL_DETAILS`| *Không có* | `SELECT ... JOIN` bảng người dùng và bảng món ăn | `DETAILS_RESULT` kèm JSON chi tiết |
 
----
-
-## 📖 Hướng dẫn sử dụng
+### 📖 Hướng dẫn sử dụng
 
 **1. Khởi động Server**
 1. Mở ứng dụng, chọn Form Server. Nhấn nút **Bắt đầu Server**.
@@ -876,9 +868,7 @@ Mọi thao tác giao tiếp đều thông qua lớp `Packet` được chuyển �
 2. Nhấn nút `Xóa`.
 3. Xác nhận `Yes` để xóa món khỏi hệ thống. Khung MENU sẽ tự động cập nhật lại.
 
----
-
-## 📁 Cấu trúc dữ liệu lưu trữ
+### 📁 Cấu trúc dữ liệu lưu trữ
 
 - **Cơ sở dữ liệu:** Hệ thống dùng SQLite với file `data.db` làm trung tâm lưu trữ, bao gồm 2 bảng `NguoiDung` và `MonAn` có quan hệ với nhau qua khóa ngoại `IDNCC`.
 - **Thư mục ảnh mặc định (`Resources`):** Chứa các ảnh thiết lập sẵn (Phở, Cơm tấm, Hủ tiếu).
