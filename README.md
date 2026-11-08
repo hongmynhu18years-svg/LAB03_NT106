@@ -341,8 +341,168 @@ Trong đó:
 > - `ReadLine()` đọc thông điệp theo từng dòng; dữ liệu chỉ được xử lý khi nhận được ký tự kết thúc dòng.
 > - Server xử lý lần lượt từng Client, chưa hỗ trợ giao tiếp đồng thời với nhiều Client.
 > - Khi Port `8080` đang được chương trình khác sử dụng, Server có thể không khởi động được.
-> - Code hiện tại chưa triển khai nút **Stop** và chưa có cơ chế dừng `TcpListener` một cách chủ động khi đóng Form.
 > - `Thread` được thiết lập `IsBackground = true`, giúp luồng nền không giữ tiến trình tiếp tục chạy sau khi các luồng foreground đã kết thúc.
+
+---
+
+
+## 🔗 Bài 3 — Gửi và nhận dữ liệu bằng TCP (1 Server – 1 Client)
+
+### 🖼️ Giao diện chương trình
+
+**1. Form điều hướng — TCP Client/Server**
+
+<img width="440" height="245" alt="Giao diện Form điều hướng - TCP Client:Server" src="https://github.com/user-attachments/assets/c64a7462-8e8a-4244-a586-99e55b12bc27" />
+
+**2. Giao diện TCP Client**
+
+<img width="730" height="522" alt="Giao diện TCP Client" src="https://github.com/user-attachments/assets/58ff4df6-8f5a-44c8-8ca6-5e78a3435f17" />
+
+**3. Giao diện TCP Server**
+
+<img width="728" height="520" alt="Giao diện TCP Server" src="https://github.com/user-attachments/assets/bdb00fad-abf8-4fd3-aee8-a9f4d80eeef2" />
+
+### 🎯 Nội dung thực hành
+
+- Xây dựng ứng dụng gửi và nhận dữ liệu giữa **1 TCP Server và 1 TCP Client** bằng ngôn ngữ C# trên nền tảng Windows Forms.
+- Sử dụng giao thức **TCP (Transmission Control Protocol)** để thiết lập kết nối và truyền dữ liệu qua mạng.
+- Cho phép Server lắng nghe tại một Port được chỉ định và tiếp nhận thông điệp từ Client.
+- Cho phép Client nhập địa chỉ IP, Port để kết nối và gửi thông điệp đến Server.
+- Cung cấp các chức năng **Connect, Send, Disconnect** ở phía Client.
+- Hiển thị trạng thái kết nối, nội dung thông điệp và sự kiện ngắt kết nối trên giao diện Server.
+- Sử dụng **Thread** để xử lý kết nối trên luồng nền, tránh làm treo giao diện Windows Forms.
+
+### 🛠️ Cách thức thực hiện
+
+**1. Form điều hướng (`Lab03_Bai03`)**
+
+- Khởi tạo giao diện bằng `InitializeComponent()`.
+- Sử dụng `btnServer_Click()` để mở form `Lab03_Bai03_TCPServer`.
+- Sử dụng `btnUDPCLient_Click()` để mở form `Lab03_Bai03_TCPClient`.
+- Sử dụng `btnThoat_Click()` để đóng form điều hướng.
+
+**2. TCP Server (`Lab03_Bai03_TCPServer`)**
+
+- Đọc Port từ `txtPort` và chuyển thành số nguyên bằng `int.Parse()`.
+- Sử dụng `TcpListener(IPAddress.Any, port)` để tạo Server lắng nghe tại Port đã chỉ định trên các địa chỉ IP cục bộ phù hợp.
+- Gọi `listener.Start()` để bắt đầu lắng nghe kết nối.
+- Sử dụng `Thread` với `IsBackground = true` để thực thi hàm `StartServer()` trên luồng nền.
+- Gọi `listener.AcceptTcpClient()` để chờ và chấp nhận kết nối từ Client.
+- Lấy thông tin địa chỉ Client thông qua `client.Client.RemoteEndPoint`.
+- Sử dụng `client.GetStream()` để tạo `NetworkStream` nhận dữ liệu.
+- Khởi tạo bộ đệm `byte[1024]` để đọc dữ liệu từ luồng mạng.
+- Sử dụng `stream.Read()` để tiếp nhận dữ liệu liên tục cho đến khi Client đóng kết nối.
+- Sử dụng `Encoding.ASCII.GetString()` để chuyển dữ liệu từ mảng byte thành chuỗi.
+- Hiển thị thông điệp và trạng thái kết nối trên `lvServer`.
+- Sử dụng `InvokeRequired` kết hợp `Invoke()` để cập nhật `ListView` từ luồng khác.
+- Sử dụng `EnsureVisible()` để tự động cuộn đến thông điệp mới nhất.
+- Vô hiệu hóa nút Listen và ô nhập Port trong khi Server đang hoạt động.
+- Khi đóng form, sử dụng `listener.Stop()` để dừng lắng nghe kết nối.
+
+**3. TCP Client (`Lab03_Bai03_TCPClient`)**
+
+- Khai báo đối tượng `TcpClient` để quản lý kết nối và `NetworkStream` để truyền dữ liệu.
+- Đọc địa chỉ IP từ `txtIP` và Port từ `txtPort`.
+- Sử dụng `new TcpClient()` để khởi tạo Client.
+- Gọi `tcpClient.Connect(ip, port)` để thiết lập kết nối đến Server.
+- Sử dụng `tcpClient.GetStream()` để lấy luồng giao tiếp.
+- Hiển thị thông báo khi kết nối thành công và vô hiệu hóa nút Connect.
+- Đọc nội dung từ `txtMessage` và thêm ký tự xuống dòng `\n`.
+- Sử dụng `Encoding.ASCII.GetBytes()` để chuyển thông điệp thành mảng byte.
+- Gửi dữ liệu bằng `stream.Write(data, 0, data.Length)`.
+- Xóa nội dung ô nhập và đưa con trỏ về `txtMessage` sau khi gửi.
+- Kiểm tra trạng thái kết nối trước khi gửi dữ liệu; hiển thị cảnh báo nếu chưa kết nối.
+- Khi nhấn Disconnect, gửi thông điệp `quit\n` nếu kết nối còn hoạt động.
+- Đóng `NetworkStream`, đóng `TcpClient` và đặt đối tượng kết nối về `null`.
+- Kích hoạt lại nút Connect để người dùng có thể kết nối lại.
+- Sử dụng `try-catch` để xử lý lỗi kết nối, gửi dữ liệu và ngắt kết nối.
+
+### ▶️ Hướng dẫn sử dụng
+
+**1. Khởi động TCP Server**
+
+1. Mở **Bài 3** từ giao diện chính của Lab 3.
+2. Nhấn **TCP Server** tại form điều hướng.
+3. Nhập Port cần lắng nghe, ví dụ `8080`.
+4. Nhấn **Listen** để khởi động Server.
+5. Nút Listen chuyển thành `Listening...` và bị vô hiệu hóa.
+6. Kiểm tra thông báo `Server started! Waiting for connection...` trong khu vực Messages.
+
+**2. Kết nối TCP Client**
+
+1. Tại form điều hướng, nhấn **TCP Client**.
+2. Nhập địa chỉ IP của Server vào ô IP, ví dụ `127.0.0.1` khi chạy trên cùng một máy.
+3. Nhập Port `8080`, trùng với Port Server đang lắng nghe.
+4. Nhấn **Connect** để thiết lập kết nối.
+5. Kiểm tra thông báo `Kết nối đến Server thành công!`.
+6. Quan sát thông báo `Connection accepted from ...` trên giao diện Server.
+
+**3. Gửi thông điệp từ Client**
+
+1. Nhập nội dung cần gửi vào ô nhập thông điệp của TCP Client, ví dụ:
+
+   ```text
+   Hello TCP Server!
+   ```
+
+2. Nhấn **Send** để gửi dữ liệu đến Server.
+3. Chương trình chuyển thông điệp thành mảng byte và gửi qua `NetworkStream`.
+4. Sau khi thao tác gửi hoàn tất, ô nhập thông điệp được xóa.
+5. Kiểm tra nội dung nhận được trong khu vực **Messages** của TCP Server.
+6. Tiếp tục nhập và gửi các thông điệp khác nếu cần.
+
+**4. Ngắt kết nối TCP Client**
+
+1. Nhấn **Disconnect** trên giao diện TCP Client.
+2. Nếu kết nối còn hoạt động, Client gửi thông điệp `quit` đến Server.
+3. Chương trình đóng luồng giao tiếp và kết nối TCP.
+4. Client hiển thị thông báo `Đã ngắt kết nối khỏi Server.`.
+5. Nút Connect được kích hoạt lại để cho phép kết nối mới.
+6. Server ghi nhận thông điệp `quit` và trạng thái Client ngắt kết nối.
+
+**5. Kiểm tra kết quả tại TCP Server**
+
+Ví dụ nội dung hiển thị trong khu vực Messages:
+
+```text
+Server started! Waiting for connection...
+Connection accepted from 127.0.0.1:54321
+From client: Hello TCP Server!
+From client: Testing TCP connection
+From client: quit
+Client disconnected.
+```
+
+Trong đó:
+
+- `Server started!`: Server đã khởi động và bắt đầu lắng nghe.
+- `Connection accepted from ...`: Server đã chấp nhận kết nối từ Client.
+- `From client: ...`: Dữ liệu mà Server nhận được từ Client.
+- `Client disconnected.`: Client đã đóng kết nối.
+
+**6. Kết thúc chương trình**
+
+1. Nhấn **Disconnect** tại TCP Client để ngắt kết nối.
+2. Đóng cửa sổ TCP Client.
+3. Đóng cửa sổ TCP Server để dừng lắng nghe.
+4. Nhấn **Thoát** tại form điều hướng để kết thúc Bài 3.
+
+> [!NOTE]
+> - Cần khởi động Server và nhấn **Listen** trước khi Client nhấn **Connect**.
+> - Port tại Client phải trùng với Port mà Server đang lắng nghe, ví dụ `8080`.
+> - Khi chạy trên cùng một máy, có thể sử dụng địa chỉ Loopback `127.0.0.1`.
+> - Khi chạy trên hai máy khác nhau trong cùng mạng LAN, Client cần nhập địa chỉ IPv4 của máy chạy Server.
+> - `IPAddress.Any` cho phép Server lắng nghe trên các giao diện mạng IPv4 cục bộ.
+> - Chương trình sử dụng `Encoding.ASCII`, vì vậy chưa hỗ trợ đầy đủ tiếng Việt có dấu.
+> - Phải kết nối thành công trước khi gửi; nếu chưa kết nối, Client sẽ hiển thị cảnh báo.
+> - Sau khi kết nối thành công, nút Connect bị vô hiệu hóa cho đến khi người dùng Disconnect.
+> - Thông điệp `quit` được gửi trước khi đóng kết nối nhưng Server hiện chỉ hiển thị thông điệp này, không xử lý nó như một lệnh đặc biệt.
+> - Server xử lý từng Client lần lượt, chưa hỗ trợ nhiều Client giao tiếp đồng thời.
+> - TCP là giao thức truyền dữ liệu dạng luồng byte. Mỗi lần `Read()` không nhất thiết tương ứng với đúng một lần `Write()` từ Client.
+> - Port phải là số nguyên hợp lệ trong khoảng `1–65535`; code hiện tại sử dụng `int.Parse()` và bắt ngoại lệ khi giá trị không hợp lệ.
+> - Nếu Port đang bị ứng dụng khác chiếm dụng hoặc bị tường lửa chặn, kết nối có thể thất bại.
+> - Khi đóng form Server, chương trình gọi `listener.Stop()` để dừng lắng nghe.
+> - Các thao tác kết nối và gửi dữ liệu tại Client đang được thực hiện đồng bộ, vì vậy giao diện có thể tạm thời không phản hồi khi mạng bị chậm hoặc kết nối gặp sự cố.
 
 ---
 
