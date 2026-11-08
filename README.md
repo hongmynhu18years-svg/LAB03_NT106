@@ -82,8 +82,8 @@ Tập hợp các bài thực hành Lab 3 trên một giao diện Windows Forms. 
 | **01** | Gửi và nhận dữ liệu bằng UDP | UDP Client – UDP Server |
 | **02** | Lắng nghe dữ liệu từ Telnet | TCP Socket |
 | **03** | Gửi và nhận dữ liệu bằng TCP | 1 Server – 1 Client |
-| **04** | Quản lý phòng vé – Phiên bản 3 | 1 Server – Multi Client |
-| **05** | Hôm nay ăn gì? – Phiên bản 3 | 1 Server – Multi Client, SQLite |
+| **04** | Quản lý phòng vé | 1 Server – Multi Client |
+| **05** | Hôm nay ăn gì? | 1 Server – Multi Client, SQLite |
 | **06** | Chat Room – Nhắn tin chung và riêng | TCP Client – TCP Listener |
 
 ---
