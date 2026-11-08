@@ -47,7 +47,7 @@
 ### 🧑‍💻 Danh sách thành viên
 
 | STT | Họ và tên | MSSV | 
-|:---:|---|:---:|---|
+|:---:|---|:---:|
 | 1 | Hồng Mỹ Như | 25521342 | 
 | 2 | Tô Thị Thanh Nhi | 25521332 | 
 | 3 | Trương Vũ Hoàng Ngân | 25521185 | 
