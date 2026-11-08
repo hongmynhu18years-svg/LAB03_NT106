@@ -884,8 +884,8 @@ Mọi thao tác giao tiếp đều thông qua lớp `Packet` được chuyển �
 - **Thư mục ảnh mặc định (`Resources`):** Chứa các ảnh thiết lập sẵn (Phở, Cơm tấm, Hủ tiếu).
 - **Thư mục ảnh Upload (`bin/Debug`):** Chứa các ảnh do Client tải lên, tự động sinh tên file theo định dạng `img_[Ticks].png` để tránh ghi đè.
 
-## 📝 Note
-- Client luôn kết nối trực tiếp đến IP `127.0.0.1:8888`. Để triển khai mô hình nhiều máy tính, cần chỉnh sửa IP này thành IP LAN của máy cài đặt Server.
-- Để tối ưu hóa và chống treo UI (UI Freezing), tất cả lệnh `Stream.Read`, `Stream.Write` và các lệnh truy vấn SQLite đều được đặt bên trong `await Task.Run(...)`.
-- Thuộc tính `ReceiveTimeout` và `SendTimeout` được cài đặt 3000ms (3 giây) để tự ngắt kết nối nếu mạng bị lỗi, tránh để Form Client kẹt trong trạng thái khóa nút vĩnh viễn.
-- Khi hiển thị ảnh trả về từ Server, ứng dụng tạo bản sao `Bitmap` từ `MemoryStream` thay vì gán trực tiếp để giải phóng luồng bộ nhớ, tránh tình trạng lỗi khóa tệp (File lock).
+> [!NOTE]
+> - Client luôn kết nối trực tiếp đến IP `127.0.0.1:8888`. Để triển khai mô hình nhiều máy tính, cần chỉnh sửa IP này thành IP LAN của máy cài đặt Server.
+> - Để tối ưu hóa và chống treo UI (UI Freezing), tất cả lệnh `Stream.Read`, `Stream.Write` và các lệnh truy vấn SQLite đều được đặt bên trong `await Task.Run(...)`.
+> - Thuộc tính `ReceiveTimeout` và `SendTimeout` được cài đặt 3000ms (3 giây) để tự ngắt kết nối nếu mạng bị lỗi, tránh để Form Client kẹt trong trạng thái khóa nút vĩnh viễn.
+> - Khi hiển thị ảnh trả về từ Server, ứng dụng tạo bản sao `Bitmap` từ `MemoryStream` thay vì gán trực tiếp để giải phóng luồng bộ nhớ, tránh tình trạng lỗi khóa tệp (File lock).
