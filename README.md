@@ -207,7 +207,6 @@ Trong đó:
 
 ---
 
-
 ## 🖥️ Bài 2 — Lắng nghe dữ liệu từ Telnet bằng TCP
 
 ### 🖼️ Giao diện chương trình
@@ -344,7 +343,6 @@ Trong đó:
 > - `Thread` được thiết lập `IsBackground = true`, giúp luồng nền không giữ tiến trình tiếp tục chạy sau khi các luồng foreground đã kết thúc.
 
 ---
-
 
 ## 🔗 Bài 3 — Gửi và nhận dữ liệu bằng TCP (1 Server – 1 Client)
 
@@ -780,6 +778,7 @@ Tarot_Phòng chiếu 3|B1,B3
 > - Nếu Port `8080` bị ứng dụng khác sử dụng, Server có thể không khởi động được.
 
 ---
+
 ## 🍽️ Bài 5 — Hôm nay ăn gì? (1 Server – Multi Client)
 
 ### 🖼️ Giao diện chương trình
@@ -879,3 +878,309 @@ Mọi thao tác giao tiếp đều thông qua lớp `Packet` được chuyển �
 > - Để tối ưu hóa và chống treo UI (UI Freezing), tất cả lệnh `Stream.Read`, `Stream.Write` và các lệnh truy vấn SQLite đều được đặt bên trong `await Task.Run(...)`.
 > - Thuộc tính `ReceiveTimeout` và `SendTimeout` được cài đặt 3000ms (3 giây) để tự ngắt kết nối nếu mạng bị lỗi, tránh để Form Client kẹt trong trạng thái khóa nút vĩnh viễn.
 > - Khi hiển thị ảnh trả về từ Server, ứng dụng tạo bản sao `Bitmap` từ `MemoryStream` thay vì gán trực tiếp để giải phóng luồng bộ nhớ, tránh tình trạng lỗi khóa tệp (File lock).
+
+---
+
+## 💬 Bài 6 — TCP Chat Room (1 Server – Multi Client)
+
+### 🖼️ Giao diện chương trình
+
+**1. Form điều hướng — TCP Chat Room**
+
+<img width="543" height="321" alt="Giao diện TCP CHAT ROOM" src="https://github.com/user-attachments/assets/42d5fa56-9888-496f-8aba-eb5b1b5dd40a" />
+
+**2. Giao diện TCP Chat Room — Server**
+
+<img width="663" height="533" alt="Giao diện TCP CHAT ROOM - SERVER" src="https://github.com/user-attachments/assets/64d3b586-1287-4b71-bfce-879299efa973" />
+
+**3. Giao diện TCP Chat Room — Client**
+
+<img width="797" height="544" alt="Giao diện TCP CHAT ROOM - CLIENT" src="https://github.com/user-attachments/assets/ffd4841d-b6a5-4902-b90e-472fef36128b" />
+
+### 🎯 Nội dung thực hành
+
+- Xây dựng ứng dụng **Chat Room** theo mô hình **1 Server – Multi Client**, sử dụng giao thức TCP để gửi và nhận dữ liệu.
+- Cho phép nhiều Client kết nối đồng thời đến cùng một Server.
+- Mỗi người dùng nhập tên riêng để tham gia phòng chat, không yêu cầu đăng ký hoặc đăng nhập tài khoản.
+- Hỗ trợ **nhắn tin chung (Broadcast)**: thông điệp được gửi đến tất cả người dùng đang kết nối, bao gồm cả người gửi.
+- Hỗ trợ **nhắn tin riêng (Private Message)**: người dùng có thể lựa chọn một Client cụ thể để gửi thông điệp.
+- Tự động cập nhật danh sách người dùng trực tuyến khi có Client tham gia hoặc rời phòng.
+- Kiểm tra tên người dùng, ngăn trùng tên và xử lý các trường hợp kết nối không hợp lệ.
+- **Mở rộng:** Cho phép gửi hình ảnh `.jpg`, `.png` và file văn bản `.txt` thông qua TCP.
+- Hỗ trợ xem nội dung file `.txt` trực tiếp trong khung chat và mở cửa sổ xem ảnh đính kèm.
+- Sử dụng lập trình bất đồng bộ `async/await` để quản lý kết nối, truyền nhận dữ liệu và xử lý nhiều Client.
+
+### 🛠️ Cách thức thực hiện
+
+**1. Form điều hướng (`Lab03_Bai06`)**
+
+- Khởi tạo giao diện chính bằng `InitializeComponent()`.
+- Sử dụng `btnOpenServer_Click()` để mở form `Lab03_Bai06_Server`.
+- Sử dụng `btnOpenClient_Click()` để mở form `Lab03_Bai06_Client`.
+- Sử dụng `btnThoat_Click()` để đóng form điều hướng.
+- Cho phép mở nhiều cửa sổ Client để kiểm thử chức năng Chat Room.
+
+**2. TCP Server (`Lab03_Bai06_Server`)**
+
+- Khởi tạo `TcpListener` với `IPAddress.Any` và Port `8006`.
+- Sử dụng `listener.Start()` để bắt đầu lắng nghe kết nối TCP.
+- Gọi `AcceptTcpClientAsync()` để chấp nhận kết nối từ các Client theo cơ chế bất đồng bộ.
+- Sử dụng `HashSet<TcpClient>` để quản lý các kết nối đang tồn tại.
+- Sử dụng `Dictionary<string, Session>` để quản lý người dùng theo tên và phiên kết nối.
+- Mỗi `Session` lưu đối tượng `TcpClient` và `StreamWriter` tương ứng.
+- Sử dụng `HandleClientAsync()` để xử lý riêng từng Client mà không chặn vòng lặp tiếp nhận kết nối mới.
+- Sử dụng `StreamReader` và `StreamWriter` với mã hóa UTF-8 để đọc, ghi thông điệp.
+- Sử dụng `SemaphoreSlim(1, 1)` để tuần tự hóa việc đăng ký người dùng, định tuyến thông điệp và cập nhật danh sách trực tuyến.
+- Sử dụng `RouteMessageAsync()` để phân loại tin nhắn chung và tin nhắn riêng.
+- Sử dụng `BroadcastAsync()` để chuyển tiếp thông điệp đến các Client đang kết nối.
+- Sử dụng `SendUserListAsync()` để cập nhật danh sách người dùng trực tuyến.
+- Ghi lại các sự kiện kết nối, tham gia và rời phòng trong `lstServer`.
+- Đóng `TcpListener` và các kết nối Client khi đóng form Server.
+
+**3. Kết nối và đăng ký tên người dùng (`Lab03_Bai06_Client`)**
+
+- Cho phép nhập địa chỉ IP Server tại `txtIP`, mặc định là `127.0.0.1`.
+- Cho phép nhập tên người dùng tại `txtName`, tối đa 30 ký tự.
+- Sử dụng `TcpClient.ConnectAsync()` để kết nối đến Server tại Port `8006`.
+- Sau khi kết nối TCP, Client gửi thông điệp `JOIN` kèm tên người dùng.
+- Server kiểm tra tên hợp lệ, không để trống và không trùng với người dùng đang trực tuyến.
+- Nếu hợp lệ, Server gửi phản hồi `OK` và thêm người dùng vào danh sách.
+- Nếu không hợp lệ, Server gửi phản hồi `ERROR` với nội dung thông báo tương ứng.
+- Sau khi kết nối thành công, Client kích hoạt các chức năng gửi tin nhắn, đính kèm file và ngắt kết nối.
+- Khi ngắt kết nối, chương trình cập nhật trạng thái các nút và cho phép người dùng kết nối lại.
+
+**4. Gửi tin nhắn chung (Broadcast)**
+
+- Người dùng chọn **Gửi chung** trong danh sách người nhận `cboNguoi`.
+- Nhập nội dung vào `txtMessage`.
+- Sử dụng `btnSend_Click()` để xử lý sự kiện gửi tin nhắn.
+- Loại bỏ ký tự xuống dòng và khoảng trắng thừa trong nội dung.
+- Sử dụng `SendChatAsync()` để gửi thông điệp theo cú pháp `ALL`.
+- Server nhận thông điệp và gọi `BroadcastAsync()` để chuyển tiếp đến tất cả Client đã đăng ký.
+- Client nhận dữ liệu và hiển thị thông điệp trong `lstChat`.
+- Sau khi gửi, chương trình xóa nội dung ô nhập để chuẩn bị cho tin nhắn tiếp theo.
+
+**5. Gửi tin nhắn riêng (Private Message)**
+
+- Người dùng chọn tên người nhận trong `cboNguoi`.
+- Sử dụng cú pháp `PM` để gửi nội dung đến một Client cụ thể.
+- Server sử dụng `users.TryGetValue()` để tìm phiên kết nối của người nhận.
+- Nếu người nhận đang trực tuyến, Server chuyển tiếp thông điệp đến Client tương ứng.
+- Nội dung tin nhắn riêng được hiển thị với nhãn `[Riêng]`.
+- Server cũng gửi bản sao thông điệp riêng về cho người gửi nếu người nhận là một Client khác.
+- Nếu người nhận đã ngắt kết nối, Server trả về thông báo lỗi.
+- Danh sách người nhận được cập nhật khi có người tham gia hoặc rời phòng.
+
+**6. Gửi hình ảnh và file văn bản (Attachment)**
+
+- Sử dụng nút **Đính kèm** (`btnDK_Click`) để mở hộp thoại `OpenFileDialog`.
+- Cho phép lựa chọn các định dạng `.jpg`, `.png` và `.txt`.
+- Sử dụng `Path.GetExtension()` để kiểm tra phần mở rộng của file.
+- Giới hạn dung lượng file tối đa **2 MiB (2 × 1024 × 1024 byte)**.
+- Sử dụng `File.OpenRead()` và `BinaryReader` để đọc dữ liệu file dưới dạng mảng byte.
+- Sử dụng `Task.Run()` để thực hiện thao tác đọc file mà không chặn luồng giao diện.
+- Mã hóa tên file và nội dung file thành chuỗi Base64 bằng `Convert.ToBase64String()`.
+- Đóng gói dữ liệu theo định dạng `ATTACH_V1`.
+- Gửi dữ liệu đính kèm bằng `SendChatAsync()` thông qua cơ chế gửi chung hoặc gửi riêng.
+- Server chuyển tiếp gói dữ liệu đến các Client tương ứng mà không trực tiếp giải mã nội dung file.
+- Client nhận dữ liệu và sử dụng `Convert.FromBase64String()` để khôi phục tên file và dữ liệu gốc.
+
+**7. Hiển thị file đính kèm**
+
+- Sử dụng `ParseAndDisplayChat()` để xác định thông điệp có chứa tiền tố `ATTACH_V1`.
+- Đối với file `.txt`, chương trình giải mã nội dung bằng `Encoding.UTF8.GetString()` và hiển thị trực tiếp trong danh sách chat.
+- Đối với hình ảnh `.jpg` và `.png`, chương trình hiển thị tên ảnh, dung lượng và hướng dẫn xem ảnh.
+- Lưu dữ liệu hình ảnh vào `imageCache` theo vị trí dòng tương ứng trong `lstChat`.
+- Sử dụng sự kiện `lstChat_DoubleClick()` để nhận biết thao tác nhấp đúp vào thông điệp hình ảnh.
+- Mở form `Lab03_Bai06_Client_Anh` để hiển thị ảnh từ dữ liệu byte đã nhận.
+- Nếu dữ liệu Base64 không hợp lệ hoặc giải mã thất bại, chương trình hiển thị thông báo lỗi.
+
+**8. Cập nhật danh sách người dùng trực tuyến**
+
+- Server quản lý người dùng bằng `Dictionary<string, Session>`.
+- Khi một Client tham gia hoặc rời phòng, Server gửi thông điệp `USERS` chứa danh sách tên người dùng hiện tại.
+- Client xử lý dữ liệu bằng `UpdateRecipients()`.
+- Danh sách người nhận luôn có lựa chọn **Gửi chung**.
+- Tên của chính người dùng được loại khỏi danh sách người nhận riêng.
+- Nếu người nhận đang được chọn đã rời phòng, chương trình chuyển trạng thái danh sách thành chưa chọn người nhận.
+- Người dùng cần chọn lại người nhận hợp lệ trước khi gửi tin nhắn riêng tiếp theo.
+
+**9. Quản lý kết nối và xử lý lỗi**
+
+- Sử dụng `try-catch` để xử lý `IOException`, `SocketException` và `ObjectDisposedException`.
+- Sử dụng `disconnectRequested` để kiểm soát trạng thái ngắt kết nối chủ động từ Client.
+- Sử dụng `closing` để nhận biết chương trình đang đóng.
+- Sử dụng `SetConnected()` để điều chỉnh trạng thái các nút Connect, Disconnect, Send và Đính kèm.
+- Sử dụng `ResetRecipients()` để khôi phục danh sách người nhận về lựa chọn mặc định.
+- Sử dụng `TcpClient.Close()` để đóng kết nối khi người dùng nhấn Disconnect hoặc đóng form.
+- Khi Server đóng, các kết nối Client đang hoạt động được đóng để kết thúc giao tiếp.
+
+### 📡 Giao thức trao đổi dữ liệu
+
+| Lệnh | Chức năng |
+|---|---|
+| `JOIN` | Client gửi tên để tham gia Chat Room |
+| `OK` | Server xác nhận đăng ký tên thành công |
+| `ERROR` | Thông báo lỗi kết nối, tên hoặc gửi tin nhắn |
+| `ALL` | Client gửi tin nhắn chung |
+| `PM` | Client gửi tin nhắn riêng |
+| `CHAT` | Server chuyển tiếp nội dung tin nhắn |
+| `USERS` | Server cập nhật danh sách người dùng trực tuyến |
+| `ATTACH_V1` | Định dạng dữ liệu file đính kèm |
+
+Các trường của thông điệp điều khiển được phân cách bằng ký tự Tab (`\t`). Riêng dữ liệu đính kèm sử dụng dấu `|` để phân tách tiền tố, tên file và nội dung đã mã hóa Base64.
+
+### ▶️ Hướng dẫn sử dụng
+
+**1. Khởi động TCP Server**
+
+1. Mở **Bài 6** từ giao diện chính của Lab 3.
+2. Tại cửa sổ **TCP Chat Room**, nhấn **SERVER**.
+3. Nhấn **LISTEN** để bắt đầu lắng nghe.
+4. Server khởi động tại Port `8006`.
+5. Kiểm tra thông báo `Đang lắng nghe TCP cổng 8006.`.
+6. Giữ cửa sổ Server hoạt động trong suốt quá trình trao đổi dữ liệu.
+
+**2. Kết nối Client vào Chat Room**
+
+1. Tại giao diện điều hướng, nhấn **CLIENT**.
+2. Nhập địa chỉ IP của Server, ví dụ `127.0.0.1` nếu chạy trên cùng một máy.
+3. Nhập tên người dùng vào ô **Name**, ví dụ `Client1`.
+4. Nhấn **Connect**.
+5. Sau khi Server xác nhận, Client hiển thị thông báo `Đã vào phòng với tên Client1.`.
+6. Mở thêm các cửa sổ Client và đăng nhập bằng những tên khác nhau, ví dụ `Client2`, `Client3`.
+7. Kiểm tra danh sách người dùng đang trực tuyến trong mục **Người nhận**.
+
+**3. Gửi tin nhắn chung**
+
+1. Tại Client 1, chọn **Gửi chung** trong danh sách người nhận.
+2. Nhập thông điệp vào ô **Message**, ví dụ:
+
+   ```text
+   Xin chào mọi người!
+   ```
+
+3. Nhấn **Send** để gửi tin nhắn.
+4. Server tiếp nhận và chuyển tiếp thông điệp đến tất cả Client.
+5. Quan sát nội dung tin nhắn xuất hiện trong khung chat của các Client.
+
+Ví dụ kết quả:
+
+```text
+Client1: Xin chào mọi người!
+Client2: Chào Client1!
+Client3: Chào cả phòng!
+```
+
+**4. Gửi tin nhắn riêng**
+
+1. Tại Client 1, mở danh sách **Người nhận**.
+2. Chọn người dùng cần nhắn tin riêng, ví dụ `Client2`.
+3. Nhập nội dung vào ô **Message**.
+4. Nhấn **Send**.
+5. Server chỉ chuyển tiếp tin nhắn đến Client 2 và gửi bản sao cho Client 1.
+6. Các Client khác không nhận được nội dung tin nhắn riêng này.
+
+Ví dụ:
+
+```text
+[Riêng] Client1 → Client2: Bạn có nhận được tin nhắn không?
+```
+
+**5. Gửi hình ảnh (.jpg, .png)**
+
+1. Đảm bảo Client đã kết nối thành công đến Server.
+2. Chọn **Gửi chung** hoặc một người nhận cụ thể.
+3. Nhấn nút **Đính kèm**.
+4. Chọn hình ảnh có định dạng `.jpg` hoặc `.png`.
+5. Nhấn **Open** để xác nhận.
+6. Chương trình đọc, mã hóa và gửi dữ liệu hình ảnh qua TCP.
+7. Client nhận được thông điệp chứa tên ảnh và dung lượng.
+8. Nhấp đúp vào dòng thông điệp hình ảnh để mở cửa sổ xem ảnh.
+
+Ví dụ:
+
+```text
+Client1: [Hình ảnh: image.png] (125 KB) - (Double click để xem)
+```
+
+**6. Gửi file văn bản (.txt)**
+
+1. Nhấn **Đính kèm** tại giao diện Client.
+2. Chọn file có phần mở rộng `.txt`.
+3. Nhấn **Open** để gửi.
+4. Chương trình đọc file và mã hóa dữ liệu thành Base64.
+5. Server chuyển tiếp dữ liệu đến người nhận tương ứng.
+6. Client nhận giải mã và hiển thị nội dung file trực tiếp trong khung chat.
+
+Ví dụ:
+
+```text
+Client1: [File TXT: hello.txt]: Xin chào từ file văn bản!
+```
+
+**7. Ngắt kết nối Client**
+
+1. Nhấn **Disconnect** trên giao diện Client.
+2. Chương trình đóng kết nối TCP với Server.
+3. Client hiển thị thông báo `Đã ngắt kết nối.`.
+4. Server cập nhật danh sách người dùng trực tuyến.
+5. Các Client còn lại nhận danh sách người dùng mới.
+6. Người dùng có thể nhập thông tin và nhấn **Connect** để kết nối lại.
+
+**8. Kết thúc Chat Room**
+
+1. Ngắt kết nối các Client đang hoạt động.
+2. Đóng các cửa sổ Client.
+3. Tại cửa sổ Server, nhấn **Thoát**.
+4. Server dừng lắng nghe và đóng các kết nối còn tồn tại.
+5. Nhấn **Thoát** tại form điều hướng để kết thúc Bài 6.
+
+### 📎 Định dạng file đính kèm
+
+| Định dạng | Chức năng | Cách hiển thị |
+|---|---|---|
+| `.jpg` | Gửi hình ảnh JPEG | Nhấp đúp để xem ảnh |
+| `.png` | Gửi hình ảnh PNG | Nhấp đúp để xem ảnh |
+| `.txt` | Gửi file văn bản | Hiển thị nội dung trực tiếp |
+| Định dạng khác | Không hỗ trợ | Không cho phép chọn hoặc gửi |
+
+**Cấu trúc dữ liệu đính kèm:**
+
+```text
+ATTACH_V1|Base64(Tên file)|Base64(Nội dung file)
+```
+
+**Quy trình xử lý:**
+
+1. Chọn file từ thiết bị.
+2. Kiểm tra định dạng và dung lượng.
+3. Đọc nội dung file thành mảng byte.
+4. Mã hóa tên file và nội dung bằng Base64.
+5. Gửi gói dữ liệu thông qua TCP Server.
+6. Server chuyển tiếp đến người nhận.
+7. Client nhận và giải mã dữ liệu.
+8. Hiển thị nội dung văn bản hoặc hình ảnh.
+
+> [!NOTE]
+> - Chương trình sử dụng giao thức **TCP**, Port cố định `8006`.
+> - Server sử dụng `IPAddress.Any`, cho phép lắng nghe trên các giao diện mạng IPv4 cục bộ.
+> - Cần khởi động Server và nhấn **LISTEN** trước khi các Client kết nối.
+> - IP mặc định `127.0.0.1` dùng để kiểm thử trên cùng một máy. Khi chạy trên các máy khác nhau trong LAN, phải nhập địa chỉ IPv4 của máy Server.
+> - Người dùng chỉ cần nhập tên để tham gia Chat Room, không cần đăng ký tài khoản hoặc mật khẩu.
+> - Tên người dùng phải có từ 1 đến 30 ký tự, không được trùng tên đang sử dụng hoặc trùng với giá trị `Gửi chung`.
+> - Chương trình không phân biệt chữ hoa và chữ thường khi kiểm tra tên trùng.
+> - Nội dung nhập trong ô tin nhắn được giới hạn tối đa **1000 ký tự**.
+> - Tin nhắn chung được gửi đến toàn bộ người dùng đang kết nối, bao gồm cả người gửi.
+> - Tin nhắn riêng chỉ được chuyển tiếp đến người nhận và người gửi.
+> - Danh sách người dùng trực tuyến được cập nhật khi có Client tham gia hoặc rời phòng.
+> - Chương trình hỗ trợ gửi file `.jpg`, `.png` và `.txt` với dung lượng tối đa **2 MiB** mỗi file. Giới hạn này đang được kiểm tra tại Client.
+> - File đính kèm được mã hóa Base64 để truyền trong thông điệp văn bản qua TCP; Base64 không phải phương pháp mã hóa bảo mật.
+> - Hình ảnh được lưu tạm trong bộ nhớ Client để xem bằng thao tác nhấp đúp, chưa có chức năng lưu ảnh nhận được xuống máy.
+> - Nội dung file `.txt` được giải mã UTF-8 và hiển thị trực tiếp, chưa có chức năng lưu file văn bản nhận được.
+> - File và tin nhắn được truyền thông qua Server; Server không lưu trữ lịch sử tin nhắn hoặc file đính kèm vào cơ sở dữ liệu.
+> - Dữ liệu Chat Room hiện chưa được mã hóa bằng TLS, không nên sử dụng để trao đổi thông tin nhạy cảm trên mạng không tin cậy.
+> - Server xử lý nhiều Client bằng các tác vụ bất đồng bộ và sử dụng `SemaphoreSlim` để tuần tự hóa thao tác định tuyến tin nhắn.
+> - Khi Client ngắt kết nối hoặc Server đóng, chương trình giải phóng các kết nối TCP tương ứng.
+
+---
