@@ -506,3 +506,277 @@ Trong đó:
 
 ---
 
+## 🎬 Bài 4 — Quản lý phòng vé (1 Server – Multi Client)
+
+### 🖼️ Giao diện chương trình
+
+**1. Giao diện chọn phim — Select Movie**
+
+<img width="732" height="290" alt="Giao diện Chọn phim" src="https://github.com/user-attachments/assets/2d20e60b-d34e-4618-a2bc-b75f43812a0d" />
+
+**2. Giao diện đặt vé — Booking Form**
+
+<img width="521" height="289" alt="Giao diện Đặt vé" src="https://github.com/user-attachments/assets/ae8f2904-3689-429e-a285-1d4dff6ca487" />
+
+**3. Giao diện xác thực quản trị viên — Password Form**
+
+<img width="360" height="171" alt="Giao diện Xác thực Quản trị viên" src="https://github.com/user-attachments/assets/60d3ff24-df14-436b-89d8-7ca28625c514" />
+
+**4. Giao diện quản lý và xuất thống kê — Admin Form**
+
+<img width="742" height="290" alt="Giao diện Quản lý và Xuất thống kê" src="https://github.com/user-attachments/assets/e0d9f343-077e-4322-9e91-96aac49d0e25" />
+
+### 🎯 Nội dung thực hành
+
+- Xây dựng ứng dụng **quản lý phòng vé xem phim** theo mô hình **1 Server – Multi Client**, kế thừa chức năng đặt vé của Bài 5 – Lab 2.
+- Sử dụng giao thức **TCP** để kết nối và trao đổi dữ liệu giữa Server với nhiều Client.
+- Quản lý tập trung trạng thái ghế đã đặt tại Server, đảm bảo các Client có thể cập nhật và đồng bộ thông tin đặt vé.
+- Ngăn chặn tình trạng nhiều Client đặt trùng một ghế trong cùng phim và phòng chiếu.
+- Cho phép khách hàng chọn phim, phòng chiếu, ghế ngồi và thực hiện đặt vé.
+- Tính tổng tiền dựa trên giá vé chuẩn và hệ số của từng loại ghế.
+- Hiển thị hóa đơn sau khi Server xác nhận đặt vé thành công.
+- Cung cấp giao diện quản trị viên để thống kê số vé bán, vé còn lại, tỷ lệ bán, doanh thu và xếp hạng.
+- Lưu trạng thái ghế đã đặt vào file tại Server và xuất báo cáo thống kê ra file `.txt`.
+
+### 🛠️ Cách thức thực hiện
+
+**1. Khởi tạo TCP Server (`Lab03_Bai04_Server`)**
+
+- Sử dụng `TcpListener` với `IPAddress.Any` và Port `8080` để khởi tạo Server.
+- Gọi `StartServer()` trong `Program.Main()` để tự động khởi động Server khi chạy ứng dụng.
+- Sử dụng `Thread` với `IsBackground = true` để chạy Server trên luồng nền.
+- Dùng `AcceptTcpClient()` để chấp nhận kết nối từ các Client.
+- Tạo một Thread riêng cho mỗi Client thông qua `HandleClient()` nhằm xử lý nhiều kết nối.
+- Sử dụng `Dictionary<string, HashSet<string>>` để quản lý danh sách ghế đã đặt theo từng phim và phòng chiếu.
+- Dùng `lock(lockObj)` để đồng bộ thao tác truy cập dữ liệu, kiểm tra và cập nhật ghế đã đặt.
+- Sử dụng `StreamReader` và `StreamWriter` với mã hóa UTF-8 để trao đổi thông điệp qua TCP.
+- Đọc dữ liệu từ `Lab03_Bai04_Seats.txt` bằng `LoadData()` và ghi trạng thái ghế bằng `SaveData()`.
+- Sử dụng `BroadcastUpdate()` để thông báo trạng thái ghế mới cho các Client đang kết nối.
+
+**2. Giao diện chọn phim (`Lab03_Bai04`)**
+
+- Cho phép người dùng nhập tên khách hàng vào `txtCustomerName`.
+- Kiểm tra tên khách hàng không được để trống trước khi chọn phim.
+- Hiển thị bốn bộ phim thông qua các poster tương ứng.
+- Xử lý lựa chọn phim bằng các sự kiện `btnDaoPhoPiano_Click()`, `btnMai_Click()`, `btnGapLaiChiBau_Click()` và `btnTarot_Click()`.
+- Truyền tên phim, giá vé chuẩn và tên khách hàng đến `Lab03_Bai04_BookingForm`.
+- Sử dụng `ShowDialog()` để mở giao diện đặt vé.
+- Cho phép truy cập khu vực quản trị thông qua liên kết **Quản lý hệ thống**.
+- Sử dụng `System.Windows.Forms.Timer` và `FrameDimension` để hiển thị hiệu ứng GIF trên giao diện.
+- Hỗ trợ thu nhỏ, phóng to và đóng cửa sổ.
+
+**3. Giao diện đặt vé (`Lab03_Bai04_BookingForm`)**
+
+- Nhận thông tin phim, giá vé và tên khách hàng thông qua Constructor.
+- Hiển thị tên phim và khách hàng ở chế độ `ReadOnly`.
+- Tạo danh sách phòng chiếu phù hợp với từng bộ phim bằng `ComboBox`.
+- Khởi tạo kết nối TCP đến Server tại `127.0.0.1:8080`.
+- Sử dụng `ConnectToServerAndListen()` để kết nối và tạo Thread nhận thông điệp từ Server.
+- Gửi yêu cầu `GET_SEATS` để lấy trạng thái ghế đã đặt.
+- Sử dụng `ApplyBookedSeatsToUI()` để cập nhật trạng thái các nút ghế.
+- Cho phép người dùng chọn hoặc bỏ chọn ghế chưa được đặt.
+- Sử dụng `TinhTongTien()` để tính tổng tiền dựa trên hệ số giá của từng ghế.
+- Gửi yêu cầu `BOOK` đến Server khi nhấn **Thanh Toán**.
+- Nhận kết quả `SUCCESS` hoặc `FAILED` từ Server.
+- Hiển thị hóa đơn bằng `HienThiHoaDonThanhCong()` sau khi đặt vé thành công.
+- Sử dụng `LockSelectedSeats()` để khóa các ghế đã thanh toán.
+- Cho phép hủy lựa chọn ghế chưa thanh toán bằng nút **Hủy**.
+- Đóng kết nối TCP khi người dùng thoát khỏi form.
+
+**4. Đồng bộ trạng thái ghế giữa các Client**
+
+- Server sử dụng khóa dữ liệu gồm **tên phim và phòng chiếu** để phân biệt các danh sách ghế.
+- Khi Client yêu cầu `GET_SEATS`, Server trả về danh sách ghế đã đặt thông qua thông điệp `SEATS`.
+- Khi nhận yêu cầu `BOOK`, Server kiểm tra toàn bộ ghế được yêu cầu trong một vùng khóa `lock`.
+- Nếu có ghế đã được đặt, Server từ chối giao dịch và trả về `FAILED`.
+- Nếu tất cả ghế còn trống, Server cập nhật danh sách ghế và trả về `SUCCESS`.
+- Sau khi đặt vé thành công, Server gọi `BroadcastUpdate()` để gửi `SEAT_UPDATED` đến các Client.
+- Các Client cập nhật màu sắc và vô hiệu hóa những ghế đã được đặt.
+- Nếu ghế người dùng đang chọn vừa được Client khác đặt trước, chương trình hiển thị cảnh báo và cập nhật lại trạng thái ghế.
+
+**5. Tính giá vé và thanh toán**
+
+Giá vé được xác định theo công thức:
+
+`Giá ghế = Giá vé chuẩn × Hệ số loại ghế`
+
+| Loại ghế | Vị trí | Hệ số giá |
+|---|---|---|
+| Vé vớt | A1, A5, C1, C5 | 0.25 |
+| Vé thường | A2, A3, A4, B1, B5, C2, C3, C4 | 1.0 |
+| Vé VIP | B2, B3, B4 | 2.0 |
+
+**Giá vé chuẩn của các bộ phim:**
+
+| Tên phim | Giá vé chuẩn |
+|---|---:|
+| Đào, phở và piano | 45.000 VNĐ |
+| Mai | 100.000 VNĐ |
+| Gặp lại chị bầu | 70.000 VNĐ |
+| Tarot | 90.000 VNĐ |
+
+- Sử dụng `decimal` để tính toán giá vé và tổng tiền.
+- Cập nhật tổng tiền khi người dùng chọn hoặc bỏ chọn ghế.
+- Kiểm tra người dùng đã chọn ít nhất một ghế trước khi thanh toán.
+- Gửi danh sách ghế cần đặt đến Server để kiểm tra và xác nhận.
+- Chỉ hiển thị hóa đơn thành công sau khi nhận phản hồi `SUCCESS`.
+- Sau khi thanh toán, các ghế đã mua chuyển sang màu đỏ và không thể chọn lại.
+
+**6. Xác thực quản trị viên (`Lab03_Bai04_PasswordForm`)**
+
+- Cho phép người dùng truy cập khu vực quản trị thông qua liên kết **Quản lý hệ thống**.
+- Yêu cầu nhập mật khẩu trước khi truy cập giao diện quản lý.
+- Kiểm tra mật khẩu không được để trống.
+- So sánh mật khẩu nhập vào với giá trị được cấu hình trực tiếp trong code.
+- Nếu mật khẩu không chính xác, chương trình hiển thị thông báo lỗi.
+- Nếu xác thực thành công, mở `Lab03_Bai04_AdminForm`.
+- Sử dụng `Timer` để hiển thị hiệu ứng GIF trên giao diện.
+
+**7. Quản lý và xuất thống kê (`Lab03_Bai04_AdminForm`)**
+
+- Sử dụng `TcpClient` để kết nối đến Server tại `127.0.0.1:8080`.
+- Gửi lệnh `GET_ALL` để yêu cầu toàn bộ dữ liệu ghế đã đặt.
+- Nhận dữ liệu qua thông điệp `ALL_DATA` và phân tích theo phim, phòng chiếu.
+- Sử dụng `DocBangGia()` để đọc giá vé chuẩn từ file `input5.txt` nếu file tồn tại và có định dạng phù hợp.
+- Sử dụng giá mặc định `100000` khi không tìm thấy giá của phim trong file.
+- Xác định số vé đã bán dựa trên số ghế được lưu tại Server.
+- Tính số vé còn lại, tỷ lệ bán và doanh thu dựa trên loại ghế.
+- Sắp xếp thống kê theo doanh thu giảm dần bằng `OrderByDescending()`.
+- Hiển thị kết quả trong `lvThongKe` với các cột thông tin tương ứng.
+- Sử dụng `Task.Run()` để lấy dữ liệu từ Server mà không chặn luồng giao diện.
+- Sử dụng `ProgressBar` để biểu thị các mốc tiến trình trong quá trình lập báo cáo.
+- Sử dụng `SaveFileDialog` để cho phép chọn vị trí lưu file.
+- Ghi báo cáo ra file `output5.txt` bằng `StreamWriter` với mã hóa UTF-8.
+
+### 📊 Nội dung thống kê
+
+| Thông tin | Cách xác định |
+|---|---|
+| Tổng số vé | 15 ghế cho mỗi phim tại mỗi phòng chiếu được thống kê |
+| Số vé đã bán | Số ghế được ghi nhận đã đặt tại Server |
+| Số vé còn lại | Tổng số vé − Số vé đã bán |
+| Tỷ lệ bán | Số vé đã bán / Tổng số vé × 100% |
+| Doanh thu | Tổng giá của các ghế đã đặt theo hệ số giá |
+| Xếp hạng | Doanh thu giảm dần |
+
+### ▶️ Hướng dẫn sử dụng
+
+**1. Khởi động Server**
+
+1. Mở chương trình **Lab 3**.
+2. Khi ứng dụng chạy, `Program.Main()` gọi `Lab03_Bai04_Server.StartServer()` để khởi động Server.
+3. Server lắng nghe kết nối tại Port `8080`.
+4. Mở **Bài 4 – Quản lý phòng vé** từ giao diện điều hướng.
+5. Đảm bảo Server đã hoạt động trước khi thực hiện đặt vé.
+
+**2. Chọn phim**
+
+1. Tại giao diện **Select Movie**, nhập tên khách hàng.
+2. Chọn một trong bốn bộ phim bằng cách nhấn vào poster tương ứng.
+3. Nếu chưa nhập tên khách hàng, chương trình hiển thị thông báo yêu cầu bổ sung.
+4. Sau khi chọn phim hợp lệ, giao diện đặt vé được mở với thông tin khách hàng và phim đã chọn.
+
+**3. Chọn phòng chiếu và ghế ngồi**
+
+1. Tại giao diện đặt vé, chọn phòng chiếu trong danh sách **Chọn phòng chiếu**.
+2. Quan sát sơ đồ gồm 15 ghế, chia thành ba hàng A, B và C.
+3. Nhấn vào ghế còn trống để chọn.
+4. Ghế được chọn chuyển sang màu xanh lá.
+5. Nhấn lại ghế đang chọn để bỏ chọn.
+6. Kiểm tra tổng tiền được cập nhật trên giao diện.
+7. Những ghế đã được đặt sẽ hiển thị màu đỏ và bị vô hiệu hóa.
+
+**4. Thanh toán và nhận hóa đơn**
+
+1. Chọn ít nhất một ghế chưa được đặt.
+2. Nhấn **Thanh Toán**.
+3. Client gửi yêu cầu đặt vé đến Server.
+4. Server kiểm tra trạng thái các ghế được chọn.
+5. Nếu đặt vé thành công, Client nhận phản hồi `SUCCESS`.
+6. Hóa đơn hiển thị thông tin khách hàng, phim, phòng chiếu, danh sách ghế và tổng tiền.
+7. Ghế đã thanh toán được khóa để tránh lựa chọn lại.
+8. Nếu ghế đã được Client khác đặt, chương trình hiển thị cảnh báo và yêu cầu lựa chọn lại.
+
+**5. Kiểm tra đồng bộ giữa nhiều Client**
+
+1. Mở chương trình trên hai máy hoặc hai phiên ứng dụng.
+2. Đảm bảo các Client có thể kết nối đến cùng một Server.
+3. Tại Client 1, chọn một bộ phim, phòng chiếu và ghế còn trống.
+4. Nhấn **Thanh Toán** để hoàn tất việc đặt vé.
+5. Server cập nhật trạng thái ghế và gửi thông báo đến các Client.
+6. Tại Client 2, quan sát ghế vừa được đặt chuyển sang trạng thái không thể chọn.
+7. Thử đặt ghế đã được Client khác mua để kiểm tra cơ chế từ chối đặt trùng.
+
+**6. Truy cập khu vực quản trị**
+
+1. Trở về giao diện **Select Movie**.
+2. Nhấn **Quản lý hệ thống**.
+3. Nhập mật khẩu quản trị.
+4. Nhấn **Xác nhận**.
+5. Nếu mật khẩu hợp lệ, chương trình mở giao diện quản trị.
+6. Nếu mật khẩu không đúng hoặc để trống, chương trình hiển thị thông báo lỗi.
+
+**7. Xem và xuất thống kê**
+
+1. Tại giao diện quản trị, nhấn **Xuất thống kê**.
+2. Chương trình gửi yêu cầu lấy toàn bộ dữ liệu ghế đã đặt đến Server.
+3. Dữ liệu được xử lý để tính số vé bán, vé tồn, tỷ lệ bán và doanh thu.
+4. Kết quả hiển thị trong bảng thống kê, sắp xếp theo doanh thu giảm dần.
+5. Theo dõi thanh tiến trình trong quá trình tạo báo cáo.
+6. Nhấn **Ghi File** để lưu kết quả.
+7. Chọn vị trí lưu và xác nhận tên file `output5.txt`.
+8. Mở file đã lưu để kiểm tra nội dung thống kê.
+
+### 📁 Cấu trúc dữ liệu lưu trữ
+
+**1. File `Lab03_Bai04_Seats.txt`**
+
+Server sử dụng file này để lưu danh sách ghế đã được đặt.
+
+Cấu trúc mỗi dòng:
+
+`Tên phim_Phòng chiếu|Danh sách ghế đã đặt`
+
+Ví dụ:
+
+```text
+Mai_Phòng chiếu 2|A1,B2,C3
+Tarot_Phòng chiếu 3|B1,B3
+```
+
+- Mỗi dòng đại diện cho trạng thái ghế của một phim tại một phòng chiếu.
+- Các ghế đã đặt được phân cách bằng dấu phẩy.
+- File được đọc khi Server khởi động và được cập nhật sau khi đặt vé thành công.
+
+**2. File `input5.txt`**
+
+- Được `AdminForm` sử dụng để đọc bảng giá vé khi lập thống kê.
+- Theo code hiện tại, chương trình đọc giá ở dòng thứ hai của từng nhóm năm dòng.
+- Nếu không tìm thấy giá tương ứng, chương trình sử dụng giá mặc định `100000`.
+
+**3. File `output5.txt`**
+
+- Chứa báo cáo thống kê doanh thu phòng vé.
+- Bao gồm thông tin phim, phòng chiếu, giá chuẩn, tổng vé, vé bán, vé còn lại, tỷ lệ bán, doanh thu và xếp hạng.
+- File được ghi bằng UTF-8 và lưu tại vị trí người dùng lựa chọn.
+
+> [!NOTE]
+> - **Server sử dụng Port `8080`** và tự động khởi động khi chạy ứng dụng qua `Program.Main()`.
+> - Chương trình sử dụng mô hình **1 Server – nhiều Client**, mỗi Client được xử lý bằng một Thread riêng.
+> - Mỗi phòng chiếu có **15 ghế**, được chia thành ba hàng A, B và C.
+> - Trạng thái ghế được quản lý theo từng cặp **phim – phòng chiếu**, không dùng chung giữa các phòng.
+> - Client cần kết nối được đến Server trước khi đặt vé.
+> - Code `BookingForm` và `AdminForm` hiện kết nối đến địa chỉ cố định `127.0.0.1`. Muốn chạy trên nhiều máy khác nhau trong mạng LAN, cần thay bằng địa chỉ IP của máy Server.
+> - Khi một ghế đã được thanh toán thành công, các Client khác sẽ nhận thông báo cập nhật trạng thái ghế.
+> - Server sử dụng `lock` để tránh hai Client đặt thành công cùng một ghế trong các yêu cầu đồng thời.
+> - Ghế chưa thanh toán có thể bỏ chọn bằng nút **Hủy**. Ghế đã thanh toán không thể hủy qua chức năng này.
+> - Trạng thái ghế được lưu vào `Lab03_Bai04_Seats.txt` trong thư mục thực thi và được đọc lại khi khởi động Server.
+> - Dữ liệu lưu trữ hiện chỉ bao gồm trạng thái ghế đã đặt, không phải toàn bộ thông tin giao dịch hoặc khách hàng.
+> - Giá vé tại giao diện chọn phim được khai báo trực tiếp trong code; giá dùng để lập thống kê được đọc từ `input5.txt` hoặc dùng giá mặc định. Cần đảm bảo hai nguồn giá thống nhất để kết quả doanh thu chính xác.
+> - Thống kê chỉ bao gồm các cặp phim – phòng chiếu có trong dữ liệu Server trả về. Các phòng chưa phát sinh dữ liệu ghế có thể không xuất hiện trong báo cáo.
+> - Chức năng quản trị sử dụng mật khẩu cố định trong mã nguồn, phù hợp cho mục đích thực hành nhưng chưa phải phương án xác thực an toàn cho hệ thống thực tế.
+> - `ProgressBar` biểu thị các mốc xử lý được thiết lập trong code, chưa phản ánh chính xác phần trăm công việc hoàn thành theo thời gian thực.
+> - File `output5.txt` được lưu theo đường dẫn mà người dùng chọn trong `SaveFileDialog`, không nhất thiết nằm trong thư mục chạy chương trình.
+> - Nếu Port `8080` bị ứng dụng khác sử dụng, Server có thể không khởi động được.
+
+---
