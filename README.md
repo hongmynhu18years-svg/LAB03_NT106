@@ -88,25 +88,23 @@ Tập hợp các bài thực hành Lab 3 trên một giao diện Windows Forms. 
 
 ---
 
-## 📚 NỘI DUNG THỰC HÀNH
+## 📡 Bài 1 — Gửi và nhận dữ liệu bằng UDP
 
-### 📡 Bài 1 — Gửi và nhận dữ liệu bằng UDP
-
-#### 🖥️ Giao diện chương trình
+### 🖥️ Giao diện chương trình
 
 **1. Form điều hướng — Gửi và nhận dữ liệu**
 
-<img width="458" height="256" alt="Giao diện Form điều hướng Bài 1 " src="https://github.com/user-attachments/assets/0c43e76d-b691-4941-990f-ffd8fc384ded" />
+<img width="439" height="244" alt="Giao diện Form điều hướng Bài 1" src="https://github.com/user-attachments/assets/2a9d7c16-5015-4bf3-af4f-87d6ded87d09" />
 
 **2. Giao diện UDP Client**
 
-<img width="792" height="437" alt="Giao diện UDP Client" src="https://github.com/user-attachments/assets/a002e8ee-0bd9-45b0-9e01-659934191d17" />
+<img width="777" height="431" alt="Giao diện UDP Client" src="https://github.com/user-attachments/assets/3ae1f0c5-f0c9-4257-aacf-67d310f9d9fd" />
 
 **3. Giao diện UDP Server**
 
-<img width="491" height="512" alt="Giao diện UDP Server" src="https://github.com/user-attachments/assets/abb634e9-b8b4-469c-b4e6-6c280eadf193" />
+<img width="476" height="505" alt="Giao diện UDP Server" src="https://github.com/user-attachments/assets/c2a815ca-cdaa-42e9-9926-972b0b4f724a" />
 
-#### 🎯 Nội dung thực hành
+### 🎯 Nội dung thực hành
 
 - Xây dựng ứng dụng gửi và nhận dữ liệu giữa hai bên thông qua giao thức **UDP (User Datagram Protocol)**.
 - Cho phép người dùng tại **UDP Client** nhập địa chỉ IP, Port và thông điệp cần gửi.
@@ -114,7 +112,7 @@ Tập hợp các bài thực hành Lab 3 trên một giao diện Windows Forms. 
 - Hỗ trợ gửi và nhận nội dung tiếng Việt có dấu thông qua mã hóa **UTF-8**.
 - Kiểm tra dữ liệu đầu vào, xử lý lỗi kết nối và quản lý tài nguyên khi đóng chương trình.
 
-#### 🛠️ Cách thức thực hiện
+### 🛠️ Cách thức thực hiện
 
 **1. Form điều hướng (`Lab03_Bai01`)**
 
@@ -150,7 +148,7 @@ Tập hợp các bài thực hành Lab 3 trên một giao diện Windows Forms. 
 - Vô hiệu hóa nút Listen và ô nhập Port trong lúc Server đang lắng nghe.
 - Sử dụng `Cancel()` và `Dispose()` để hủy tác vụ nhận, đóng Socket và giải phóng tài nguyên khi thoát.
 
-#### ▶️ Hướng dẫn sử dụng
+### ▶️ Hướng dẫn sử dụng
 
 **1. Khởi động UDP Server**
 
