@@ -44,7 +44,7 @@
 | **Nhóm** | 3 |
 | **Lớp** | NT106.R14.2 |
 
-### 🧑‍💻 Danh sách thành viên
+## 🧑‍💻 Danh sách thành viên
 
 | STT | Họ và tên | MSSV | 
 |:---:|---|:---:|
