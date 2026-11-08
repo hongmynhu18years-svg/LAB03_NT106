@@ -194,13 +194,11 @@ Trong đó:
 3. Nhấn **Thoát** tại form điều hướng để kết thúc Bài 1.
 
 > [!NOTE]
-> - UDP là giao thức không kết nối, không yêu cầu thiết lập phiên giao tiếp trước khi gửi dữ liệu.
 > - IP `127.0.0.1` chỉ dùng để giao tiếp trên cùng một máy. Khi chạy trên hai máy khác nhau trong LAN, phải sử dụng địa chỉ IP thực tế của Server.
 > - Port tại Client phải trùng với Port mà Server đang lắng nghe.
 > - Port hợp lệ nằm trong khoảng `1–65535`. Port mặc định được thiết lập tại Client là `9000`.
-> - Nên khởi động Server trước khi gửi dữ liệu từ Client.
 > - Thông điệp không được để trống hoặc chỉ chứa khoảng trắng.
-> - Chương trình hỗ trợ tiếng Việt có dấu nhờ mã hóa UTF-8.
+> - Chương trình hỗ trợ Tiếng Việt có dấu nhờ mã hóa UTF-8.
 > - UDP không đảm bảo thông điệp luôn được chuyển đến Server. Thông báo gửi thành công tại Client không đồng nghĩa Server đã nhận dữ liệu.
 > - UDP Client sử dụng Port nguồn do hệ điều hành cấp phát, vì vậy Port nguồn hiển thị tại Server có thể thay đổi giữa các lần gửi.
 > - Khi Port đã được ứng dụng khác sử dụng, Server có thể không khởi động được và sẽ hiển thị thông báo lỗi.
