@@ -64,7 +64,9 @@ Bài thực hành giúp sinh viên làm quen với lập trình **Socket**, tri�
 
 Tập hợp các bài thực hành Lab 3 trên một giao diện Windows Forms. Người dùng chọn bài tập từ form chính để thực hiện các chức năng từng bài tương ứng.
 
+<p align="center">
 <img width="853" height="476" alt="Giao diện chung" src="https://github.com/user-attachments/assets/ffbc47cc-3c59-4c7e-8bf4-7050cd26699a" />
+</p>
 
 ### 🎯 Mục tiêu thực hành
 
@@ -94,15 +96,21 @@ Tập hợp các bài thực hành Lab 3 trên một giao diện Windows Forms. 
 
 **1. Form điều hướng — Gửi và nhận dữ liệu**
 
+<p align="center">
 <img width="439" height="244" alt="Giao diện Form điều hướng Bài 1" src="https://github.com/user-attachments/assets/2a9d7c16-5015-4bf3-af4f-87d6ded87d09" />
+</p>
 
 **2. Giao diện UDP Client**
 
+<p align="center">
 <img width="777" height="431" alt="Giao diện UDP Client" src="https://github.com/user-attachments/assets/3ae1f0c5-f0c9-4257-aacf-67d310f9d9fd" />
+</p>
 
 **3. Giao diện UDP Server**
 
+<p align="center">
 <img width="476" height="505" alt="Giao diện UDP Server" src="https://github.com/user-attachments/assets/c2a815ca-cdaa-42e9-9926-972b0b4f724a" />
+</p>
 
 ### 🎯 Nội dung thực hành
 
@@ -195,14 +203,9 @@ Trong đó:
 
 > [!NOTE]
 > - IP `127.0.0.1` chỉ dùng để giao tiếp trên cùng một máy. Khi chạy trên hai máy khác nhau trong LAN, phải sử dụng địa chỉ IP thực tế của Server.
-> - Port tại Client phải trùng với Port mà Server đang lắng nghe.
 > - Port hợp lệ nằm trong khoảng `1–65535`. Port mặc định được thiết lập tại Client là `9000`.
-> - Thông điệp không được để trống hoặc chỉ chứa khoảng trắng.
 > - Chương trình hỗ trợ Tiếng Việt có dấu nhờ mã hóa UTF-8.
-> - UDP không đảm bảo thông điệp luôn được chuyển đến Server. Thông báo gửi thành công tại Client không đồng nghĩa Server đã nhận dữ liệu.
 > - UDP Client sử dụng Port nguồn do hệ điều hành cấp phát, vì vậy Port nguồn hiển thị tại Server có thể thay đổi giữa các lần gửi.
-> - Khi Port đã được ứng dụng khác sử dụng, Server có thể không khởi động được và sẽ hiển thị thông báo lỗi.
-> - Khi kiểm thử trên các máy khác nhau, cần đảm bảo kết nối mạng và cấu hình tường lửa cho phép lưu lượng UDP tại Port tương ứng.
 > - Khi đóng Server, chương trình hủy tác vụ nhận dữ liệu và giải phóng Socket để tránh chiếm dụng tài nguyên.
 
 ---
@@ -213,7 +216,9 @@ Trong đó:
 
 **Giao diện TCP Server — FormTelnet**
 
+<p align="center">
 <img width="730" height="521" alt="Giao diện TCP Server - FormTelnet" src="https://github.com/user-attachments/assets/ea802b0e-761e-47f8-a76f-ee0563f70a6c" />
+</p>
 
 ### 🎯 Nội dung thực hành
 
@@ -331,14 +336,11 @@ Trong đó:
 3. Đóng cửa sổ `FormTelnet` để kết thúc chương trình.
 
 > [!NOTE]
-> - Chương trình sử dụng giao thức **TCP**, yêu cầu thiết lập kết nối trước khi truyền dữ liệu.
 > - Địa chỉ `127.0.0.1` là địa chỉ Loopback, chỉ cho phép kết nối từ cùng một máy.
 > - Server sử dụng Port cố định `8080`; lệnh Telnet phải kết nối đúng Port này.
-> - Cần nhấn **Listen** trước khi thực hiện kết nối Telnet.
 > - Nếu Windows chưa bật Telnet Client, cần kích hoạt tính năng này trong **Windows Features** hoặc sử dụng lệnh `dism /online /Enable-Feature /FeatureName:TelnetClient`.
 > - Chương trình sử dụng `Encoding.ASCII` để đọc thông điệp, vì vậy không hỗ trợ đầy đủ tiếng Việt có dấu.
 > - `ReadLine()` đọc thông điệp theo từng dòng; dữ liệu chỉ được xử lý khi nhận được ký tự kết thúc dòng.
-> - Server xử lý lần lượt từng Client, chưa hỗ trợ giao tiếp đồng thời với nhiều Client.
 > - Khi Port `8080` đang được chương trình khác sử dụng, Server có thể không khởi động được.
 > - `Thread` được thiết lập `IsBackground = true`, giúp luồng nền không giữ tiến trình tiếp tục chạy sau khi các luồng foreground đã kết thúc.
 
@@ -350,15 +352,21 @@ Trong đó:
 
 **1. Form điều hướng — TCP Client/Server**
 
+<p align="center">
 <img width="440" height="245" alt="Giao diện Form điều hướng - TCP Client:Server" src="https://github.com/user-attachments/assets/c64a7462-8e8a-4244-a586-99e55b12bc27" />
+</p>
 
 **2. Giao diện TCP Client**
 
+<p align="center">
 <img width="730" height="522" alt="Giao diện TCP Client" src="https://github.com/user-attachments/assets/58ff4df6-8f5a-44c8-8ca6-5e78a3435f17" />
+</p>
 
 **3. Giao diện TCP Server**
 
+<p align="center">
 <img width="728" height="520" alt="Giao diện TCP Server" src="https://github.com/user-attachments/assets/bdb00fad-abf8-4fd3-aee8-a9f4d80eeef2" />
+</p>
 
 ### 🎯 Nội dung thực hành
 
@@ -486,21 +494,13 @@ Trong đó:
 4. Nhấn **Thoát** tại form điều hướng để kết thúc Bài 3.
 
 > [!NOTE]
-> - Cần khởi động Server và nhấn **Listen** trước khi Client nhấn **Connect**.
-> - Port tại Client phải trùng với Port mà Server đang lắng nghe, ví dụ `8080`.
 > - Khi chạy trên cùng một máy, có thể sử dụng địa chỉ Loopback `127.0.0.1`.
-> - Khi chạy trên hai máy khác nhau trong cùng mạng LAN, Client cần nhập địa chỉ IPv4 của máy chạy Server.
 > - `IPAddress.Any` cho phép Server lắng nghe trên các giao diện mạng IPv4 cục bộ.
 > - Chương trình sử dụng `Encoding.ASCII`, vì vậy chưa hỗ trợ đầy đủ tiếng Việt có dấu.
-> - Phải kết nối thành công trước khi gửi; nếu chưa kết nối, Client sẽ hiển thị cảnh báo.
-> - Sau khi kết nối thành công, nút Connect bị vô hiệu hóa cho đến khi người dùng Disconnect.
 > - Thông điệp `quit` được gửi trước khi đóng kết nối nhưng Server hiện chỉ hiển thị thông điệp này, không xử lý nó như một lệnh đặc biệt.
-> - Server xử lý từng Client lần lượt, chưa hỗ trợ nhiều Client giao tiếp đồng thời.
 > - TCP là giao thức truyền dữ liệu dạng luồng byte. Mỗi lần `Read()` không nhất thiết tương ứng với đúng một lần `Write()` từ Client.
 > - Port phải là số nguyên hợp lệ trong khoảng `1–65535`; code hiện tại sử dụng `int.Parse()` và bắt ngoại lệ khi giá trị không hợp lệ.
-> - Nếu Port đang bị ứng dụng khác chiếm dụng hoặc bị tường lửa chặn, kết nối có thể thất bại.
 > - Khi đóng form Server, chương trình gọi `listener.Stop()` để dừng lắng nghe.
-> - Các thao tác kết nối và gửi dữ liệu tại Client đang được thực hiện đồng bộ, vì vậy giao diện có thể tạm thời không phản hồi khi mạng bị chậm hoặc kết nối gặp sự cố.
 
 ---
 
@@ -510,19 +510,27 @@ Trong đó:
 
 **1. Giao diện chọn phim — Select Movie**
 
+<p align="center">
 <img width="732" height="290" alt="Giao diện Chọn phim" src="https://github.com/user-attachments/assets/2d20e60b-d34e-4618-a2bc-b75f43812a0d" />
+</p>
 
 **2. Giao diện đặt vé — Booking Form**
 
+<p align="center">
 <img width="521" height="289" alt="Giao diện Đặt vé" src="https://github.com/user-attachments/assets/ae8f2904-3689-429e-a285-1d4dff6ca487" />
+</p>
 
 **3. Giao diện xác thực quản trị viên — Password Form**
 
+<p align="center">
 <img width="360" height="171" alt="Giao diện Xác thực Quản trị viên" src="https://github.com/user-attachments/assets/60d3ff24-df14-436b-89d8-7ca28625c514" />
+</p>
 
 **4. Giao diện quản lý và xuất thống kê — Admin Form**
 
+<p align="center">
 <img width="742" height="290" alt="Giao diện Quản lý và Xuất thống kê" src="https://github.com/user-attachments/assets/e0d9f343-077e-4322-9e91-96aac49d0e25" />
+</p>
 
 ### 🎯 Nội dung thực hành
 
@@ -760,20 +768,11 @@ Tarot_Phòng chiếu 3|B1,B3
 
 > [!NOTE]
 > - **Server sử dụng Port `8080`** và tự động khởi động khi chạy ứng dụng qua `Program.Main()`.
-> - Chương trình sử dụng mô hình **1 Server – nhiều Client**, mỗi Client được xử lý bằng một Thread riêng.
-> - Mỗi phòng chiếu có **15 ghế**, được chia thành ba hàng A, B và C.
-> - Trạng thái ghế được quản lý theo từng cặp **phim – phòng chiếu**, không dùng chung giữa các phòng.
-> - Client cần kết nối được đến Server trước khi đặt vé.
 > - Code `BookingForm` và `AdminForm` hiện kết nối đến địa chỉ cố định `127.0.0.1`. Muốn chạy trên nhiều máy khác nhau trong mạng LAN, cần thay bằng địa chỉ IP của máy Server.
-> - Khi một ghế đã được thanh toán thành công, các Client khác sẽ nhận thông báo cập nhật trạng thái ghế.
 > - Server sử dụng `lock` để tránh hai Client đặt thành công cùng một ghế trong các yêu cầu đồng thời.
 > - Ghế chưa thanh toán có thể bỏ chọn bằng nút **Hủy**. Ghế đã thanh toán không thể hủy qua chức năng này.
-> - Trạng thái ghế được lưu vào `Lab03_Bai04_Seats.txt` trong thư mục thực thi và được đọc lại khi khởi động Server.
-> - Dữ liệu lưu trữ hiện chỉ bao gồm trạng thái ghế đã đặt, không phải toàn bộ thông tin giao dịch hoặc khách hàng.
+> - Trạng thái ghế được lưu vào `Lab03_Bai04_Seats.txt` trong thư mục thực thi và được đọc lại khi khởi động Server
 > - Giá vé tại giao diện chọn phim được khai báo trực tiếp trong code; giá dùng để lập thống kê được đọc từ `input5.txt` hoặc dùng giá mặc định. Cần đảm bảo hai nguồn giá thống nhất để kết quả doanh thu chính xác.
-> - Thống kê chỉ bao gồm các cặp phim – phòng chiếu có trong dữ liệu Server trả về. Các phòng chưa phát sinh dữ liệu ghế có thể không xuất hiện trong báo cáo.
-> - Chức năng quản trị sử dụng mật khẩu cố định trong mã nguồn, phù hợp cho mục đích thực hành nhưng chưa phải phương án xác thực an toàn cho hệ thống thực tế.
-> - `ProgressBar` biểu thị các mốc xử lý được thiết lập trong code, chưa phản ánh chính xác phần trăm công việc hoàn thành theo thời gian thực.
 > - File `output5.txt` được lưu theo đường dẫn mà người dùng chọn trong `SaveFileDialog`, không nhất thiết nằm trong thư mục chạy chương trình.
 > - Nếu Port `8080` bị ứng dụng khác sử dụng, Server có thể không khởi động được.
 
@@ -784,16 +783,28 @@ Tarot_Phòng chiếu 3|B1,B3
 ### 🖼️ Giao diện chương trình
 
 **1. Giao diện Server (`Server`)**
-![Giao diện Server](server.png)
+
+<p align="center">
+<img alt="Giao diện Server" src="server.png">
+</p>
 
 **2. Giao diện Client Chính — Random Menu (`Lab03_Bai05`)**
-![Giao diện Client](random_mon.png)
+
+<p align="center">
+<img alt="Giao diện Client" src="random_mon.png">
+</p>
 
 **3. Giao diện Đóng góp món ăn — Tab Nhập thông tin (`Donggopmonan`)**
-![Nhập thông tin đóng góp](nhap_donggopmon.png)
+
+<p align="center">
+<img alt="Nhập thông tin đóng góp" src="nhap_donggopmon.png">
+</p>
 
 **4. Giao diện Đóng góp món ăn — Tab Danh sách (`Donggopmonan`)**
-![Danh sách đóng góp](thongtindonggop.png)
+
+<p align="center">
+<img alt="Danh sách đóng góp" src="thongtindonggop.png">
+</p>
 
 ### 🎯 Nội dung thực hành
 
@@ -887,15 +898,21 @@ Mọi thao tác giao tiếp đều thông qua lớp `Packet` được chuyển �
 
 **1. Form điều hướng — TCP Chat Room**
 
+<p align="center">
 <img width="543" height="321" alt="Giao diện TCP CHAT ROOM" src="https://github.com/user-attachments/assets/42d5fa56-9888-496f-8aba-eb5b1b5dd40a" />
+</p>
 
 **2. Giao diện TCP Chat Room — Server**
 
+<p align="center">
 <img width="663" height="533" alt="Giao diện TCP CHAT ROOM - SERVER" src="https://github.com/user-attachments/assets/64d3b586-1287-4b71-bfce-879299efa973" />
+</p>
 
 **3. Giao diện TCP Chat Room — Client**
 
+<p align="center">
 <img width="797" height="544" alt="Giao diện TCP CHAT ROOM - CLIENT" src="https://github.com/user-attachments/assets/ffd4841d-b6a5-4902-b90e-472fef36128b" />
+</p>
 
 ### 🎯 Nội dung thực hành
 
@@ -1165,23 +1182,12 @@ ATTACH_V1|Base64(Tên file)|Base64(Nội dung file)
 > [!NOTE]
 > - Chương trình sử dụng giao thức **TCP**, Port cố định `8006`.
 > - Server sử dụng `IPAddress.Any`, cho phép lắng nghe trên các giao diện mạng IPv4 cục bộ.
-> - Cần khởi động Server và nhấn **LISTEN** trước khi các Client kết nối.
 > - IP mặc định `127.0.0.1` dùng để kiểm thử trên cùng một máy. Khi chạy trên các máy khác nhau trong LAN, phải nhập địa chỉ IPv4 của máy Server.
-> - Người dùng chỉ cần nhập tên để tham gia Chat Room, không cần đăng ký tài khoản hoặc mật khẩu.
-> - Tên người dùng phải có từ 1 đến 30 ký tự, không được trùng tên đang sử dụng hoặc trùng với giá trị `Gửi chung`.
-> - Chương trình không phân biệt chữ hoa và chữ thường khi kiểm tra tên trùng.
-> - Nội dung nhập trong ô tin nhắn được giới hạn tối đa **1000 ký tự**.
-> - Tin nhắn chung được gửi đến toàn bộ người dùng đang kết nối, bao gồm cả người gửi.
-> - Tin nhắn riêng chỉ được chuyển tiếp đến người nhận và người gửi.
-> - Danh sách người dùng trực tuyến được cập nhật khi có Client tham gia hoặc rời phòng.
 > - Chương trình hỗ trợ gửi file `.jpg`, `.png` và `.txt` với dung lượng tối đa **2 MiB** mỗi file. Giới hạn này đang được kiểm tra tại Client.
 > - File đính kèm được mã hóa Base64 để truyền trong thông điệp văn bản qua TCP; Base64 không phải phương pháp mã hóa bảo mật.
 > - Hình ảnh được lưu tạm trong bộ nhớ Client để xem bằng thao tác nhấp đúp, chưa có chức năng lưu ảnh nhận được xuống máy.
 > - Nội dung file `.txt` được giải mã UTF-8 và hiển thị trực tiếp, chưa có chức năng lưu file văn bản nhận được.
-> - File và tin nhắn được truyền thông qua Server; Server không lưu trữ lịch sử tin nhắn hoặc file đính kèm vào cơ sở dữ liệu.
-> - Dữ liệu Chat Room hiện chưa được mã hóa bằng TLS, không nên sử dụng để trao đổi thông tin nhạy cảm trên mạng không tin cậy.
 > - Server xử lý nhiều Client bằng các tác vụ bất đồng bộ và sử dụng `SemaphoreSlim` để tuần tự hóa thao tác định tuyến tin nhắn.
-> - Khi Client ngắt kết nối hoặc Server đóng, chương trình giải phóng các kết nối TCP tương ứng.
 
 ---
 
