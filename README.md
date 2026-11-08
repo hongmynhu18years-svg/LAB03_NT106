@@ -90,7 +90,7 @@ Tập hợp các bài thực hành Lab 3 trên một giao diện Windows Forms. 
 
 ## 📡 Bài 1 — Gửi và nhận dữ liệu bằng UDP
 
-### 🖥️ Giao diện chương trình
+### 🖼️ Giao diện chương trình
 
 **1. Form điều hướng — Gửi và nhận dữ liệu**
 
@@ -204,6 +204,145 @@ Trong đó:
 > - Khi Port đã được ứng dụng khác sử dụng, Server có thể không khởi động được và sẽ hiển thị thông báo lỗi.
 > - Khi kiểm thử trên các máy khác nhau, cần đảm bảo kết nối mạng và cấu hình tường lửa cho phép lưu lượng UDP tại Port tương ứng.
 > - Khi đóng Server, chương trình hủy tác vụ nhận dữ liệu và giải phóng Socket để tránh chiếm dụng tài nguyên.
+
+---
+
+
+## 🖥️ Bài 2 — Lắng nghe dữ liệu từ Telnet bằng TCP
+
+### 🖼️ Giao diện chương trình
+
+**Giao diện TCP Server — FormTelnet**
+
+<img width="730" height="521" alt="Giao diện TCP Server - FormTelnet" src="https://github.com/user-attachments/assets/ea802b0e-761e-47f8-a76f-ee0563f70a6c" />
+
+### 🎯 Nội dung thực hành
+
+- Xây dựng chương trình **TCP Server** có khả năng lắng nghe và tiếp nhận dữ liệu được gửi từ Telnet.
+- Sử dụng giao thức **TCP (Transmission Control Protocol)** để thiết lập kết nối giữa Telnet Client và Server.
+- Server lắng nghe tại địa chỉ IP `127.0.0.1` và Port `8080`.
+- Cho phép người dùng gửi thông điệp từ Telnet thông qua Command Prompt (CMD).
+- Nhận và hiển thị các thông điệp trên giao diện **Windows Forms**.
+- Sử dụng **Thread** để chạy Server trên luồng riêng, tránh làm treo giao diện.
+- Hiển thị thời gian nhận và tự động cuộn đến thông điệp mới nhất.
+
+### 🛠️ Cách thức thực hiện
+
+**1. Khởi tạo TCP Server**
+
+- Sử dụng lớp `TcpListener` trong `System.Net.Sockets` để tạo Server.
+- Thiết lập địa chỉ IP `127.0.0.1` và Port `8080` bằng `new TcpListener(IPAddress.Parse("127.0.0.1"), 8080)`.
+- Sử dụng `listener.Start()` để bắt đầu lắng nghe kết nối TCP.
+- Hiển thị thông báo `Telnet running on 127.0.0.1:8080` khi Server khởi động thành công.
+
+**2. Xử lý sự kiện nút Listen**
+
+- Bắt sự kiện `btnListen_Click()` khi người dùng nhấn nút **Listen**.
+- Sử dụng biến `isListening` để kiểm tra trạng thái hoạt động của Server.
+- Đổi nội dung nút thành `Listening...` và vô hiệu hóa nút để tránh khởi động Server nhiều lần.
+- Khởi tạo luồng riêng bằng `new Thread(StartServer)`.
+- Thiết lập `IsBackground = true` để luồng không ngăn tiến trình kết thúc.
+- Gọi `Start()` để bắt đầu thực thi hàm `StartServer()`.
+
+**3. Chấp nhận kết nối từ Telnet Client**
+
+- Sử dụng `listener.AcceptTcpClient()` để chờ và chấp nhận kết nối TCP từ Client.
+- Hiển thị thông báo `New client connected!` khi có Client kết nối.
+- Sử dụng `client.GetStream()` để lấy `NetworkStream` phục vụ việc nhận dữ liệu.
+- Khởi tạo `StreamReader` với mã hóa `Encoding.ASCII` để đọc dữ liệu từ luồng mạng.
+
+**4. Nhận và xử lý thông điệp**
+
+- Sử dụng `reader.ReadLine()` để đọc dữ liệu theo từng dòng.
+- Khi người dùng nhập thông điệp và nhấn **Enter** trong Telnet, Server nhận nội dung dòng tương ứng.
+- Sử dụng vòng lặp `while` để tiếp tục đọc cho đến khi Client ngắt kết nối.
+- Gọi `AddMessage()` để hiển thị thông điệp trên `ListView`.
+- Sử dụng `client.Close()` để đóng kết nối Client sau khi kết thúc nhận dữ liệu.
+
+**5. Cập nhật giao diện an toàn giữa các luồng**
+
+- Sử dụng `InvokeRequired` để kiểm tra việc cập nhật `ListView` từ luồng khác.
+- Sử dụng `Invoke()` để chuyển thao tác cập nhật về luồng giao diện khi cần thiết.
+- Sử dụng `DateTime.Now.ToString("HH:mm:ss")` để lấy thời gian hiển thị thông điệp.
+- Thêm dữ liệu vào `lvMessages` bằng `ListViewItem`.
+- Sử dụng `EnsureVisible()` để tự động cuộn đến thông điệp mới nhất.
+- Kiểm tra `IsDisposed` trước khi cập nhật để hạn chế thao tác trên Control đã bị hủy.
+
+**6. Xử lý lỗi**
+
+- Sử dụng `try-catch` để bắt các ngoại lệ phát sinh trong quá trình khởi tạo, kết nối và nhận dữ liệu.
+- Hiển thị thông báo lỗi trong `ListView` thông qua `AddMessage()` khi Server đang ở trạng thái lắng nghe.
+
+### ▶️ Hướng dẫn sử dụng
+
+**1. Khởi động TCP Server**
+
+1. Mở **Bài 2** từ giao diện chính của Lab 3.
+2. Nhấn nút **Listen** trên cửa sổ `FormTelnet`.
+3. Server bắt đầu lắng nghe tại địa chỉ `127.0.0.1` và Port `8080`.
+4. Nút Listen chuyển thành `Listening...` và bị vô hiệu hóa.
+5. Kiểm tra thông báo khởi động trong khu vực **Messages**.
+
+**2. Kết nối bằng Telnet**
+
+1. Mở **Command Prompt (CMD)** trên Windows.
+2. Nhập lệnh:
+
+   ```cmd
+   telnet 127.0.0.1 8080
+   ```
+
+3. Nhấn **Enter** để thực hiện kết nối.
+4. Khi kết nối thành công, Server hiển thị thông báo `New client connected!`.
+
+**3. Gửi và nhận thông điệp**
+
+1. Tại cửa sổ Telnet, nhập một thông điệp, ví dụ:
+
+   ```text
+   Hello TCP Server!
+   ```
+
+2. Nhấn **Enter** để gửi thông điệp.
+3. Server nhận dữ liệu và hiển thị thông điệp trong khu vực **Messages**.
+4. Tiếp tục nhập các thông điệp khác để kiểm tra khả năng nhận dữ liệu liên tục.
+
+**4. Kiểm tra kết quả trên Server**
+
+Ví dụ nội dung hiển thị:
+
+```text
+[15:20:01] Telnet running on 127.0.0.1:8080
+[15:20:10] New client connected!
+[15:20:15] Hello TCP Server!
+[15:20:20] Testing TCP connection
+```
+
+Trong đó:
+
+- `[15:20:01]`: Thời gian ghi nhận sự kiện.
+- `Telnet running...`: Server đã bắt đầu lắng nghe.
+- `New client connected!`: Có Client kết nối thành công.
+- `Hello TCP Server!`: Nội dung được gửi từ Telnet Client.
+
+**5. Kết thúc chương trình**
+
+1. Đóng cửa sổ Telnet để ngắt kết nối Client.
+2. Server kết thúc vòng lặp đọc dữ liệu của Client hiện tại.
+3. Đóng cửa sổ `FormTelnet` để kết thúc chương trình.
+
+> [!NOTE]
+> - Chương trình sử dụng giao thức **TCP**, yêu cầu thiết lập kết nối trước khi truyền dữ liệu.
+> - Địa chỉ `127.0.0.1` là địa chỉ Loopback, chỉ cho phép kết nối từ cùng một máy.
+> - Server sử dụng Port cố định `8080`; lệnh Telnet phải kết nối đúng Port này.
+> - Cần nhấn **Listen** trước khi thực hiện kết nối Telnet.
+> - Nếu Windows chưa bật Telnet Client, cần kích hoạt tính năng này trong **Windows Features** hoặc sử dụng lệnh `dism /online /Enable-Feature /FeatureName:TelnetClient`.
+> - Chương trình sử dụng `Encoding.ASCII` để đọc thông điệp, vì vậy không hỗ trợ đầy đủ tiếng Việt có dấu.
+> - `ReadLine()` đọc thông điệp theo từng dòng; dữ liệu chỉ được xử lý khi nhận được ký tự kết thúc dòng.
+> - Server xử lý lần lượt từng Client, chưa hỗ trợ giao tiếp đồng thời với nhiều Client.
+> - Khi Port `8080` đang được chương trình khác sử dụng, Server có thể không khởi động được.
+> - Code hiện tại chưa triển khai nút **Stop** và chưa có cơ chế dừng `TcpListener` một cách chủ động khi đóng Form.
+> - `Thread` được thiết lập `IsBackground = true`, giúp luồng nền không giữ tiến trình tiếp tục chạy sau khi các luồng foreground đã kết thúc.
 
 ---
 
