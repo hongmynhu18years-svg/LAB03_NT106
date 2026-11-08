@@ -569,7 +569,6 @@
             FormBorderStyle = FormBorderStyle.None;
             Name = "BookingForm";
             Text = "BookingForm";
-            Load += BookingForm_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxMouseDown).EndInit();
             panelGhe.ResumeLayout(false);

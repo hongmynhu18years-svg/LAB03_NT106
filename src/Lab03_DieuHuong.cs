@@ -37,6 +37,7 @@ namespace LAB03
         {
             Lab03_Bai04 Form = new Lab03_Bai04();
             Form.Show();
+            this.Hide();
         }
 
         private void btnBai5_Click(object sender, EventArgs e)
