@@ -37,18 +37,18 @@
 
 ## 👥 Thông tin nhóm thực hiện
 
-<p align="center">
+<div align="center">
 | Nội dung | Thông tin |
 |---|---|
 | **Môn học** | Lập trình mạng căn bản |
 | **Bài thực hành** | Lab 3 – Working with Sockets in C# |
 | **Nhóm** | 3 |
 | **Lớp** | NT106.R14.2 |
-</p>
+</div>
 
 ## 🧑‍💻 Danh sách thành viên
 
-<p align="center">
+<div align="center">
 | STT | Họ và tên | MSSV | 
 |:---:|---|:---:|
 | 1 | Hồng Mỹ Như | 25521342 | 
@@ -56,7 +56,7 @@
 | 3 | Trương Vũ Hoàng Ngân | 25521185 | 
 | 4 | Võ Thị Minh Thư | 25521816 |
 | 5 | Lê Hoàn Phúc | 25521422 |
-</p>
+</div>
 
 ---
 
