@@ -13,7 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\cinema.gif" />
+    <EmbeddedResource Include="Resources\cinema.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +40,9 @@
 
   <ItemGroup>
     <None Update="Lab03_Bai05_data.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\Gemini_Generated_Gif_j8cnlfj8cnlfj8cn.gif">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
