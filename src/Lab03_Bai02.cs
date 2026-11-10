@@ -40,7 +40,7 @@ namespace LAB03
             try
             {
                 // IPAddress.Any cho phép lắng nghe kết nối từ mọi card mạng (cả Localhost và máy khác trong mạng LAN)
-                listener = new TcpListener(IPAddress.Any, 9090);
+                listener = new TcpListener(IPAddress.Any, 9008);
                 listener.Start();
 
                 string localIP = GetLocalIPAddress();
