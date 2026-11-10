@@ -24,7 +24,7 @@ namespace LAB03
         private decimal tongTien = 0;
         private volatile string currentMovieKey = "";
 
-        // Các biến cho hiệu ứng GIF (nếu có sẵn trong form của bạn)
+        // Các biến cho hiệu ứng GIF
         private int currentFrame = 0;
         private int frameCount1 = 0;
         private int frameCount2 = 0;
@@ -69,7 +69,7 @@ namespace LAB03
                 cbPhongChieu.SelectedIndex = 0;
             UpdateCurrentMovieKey();
 
-            // Kết nối khi form đã có Handle để Invoke từ luồng ngầm không bị lỗi
+            // Kết nối khi form đã có Handle để tránh lỗi Invoke từ luồng ngầm
             this.Load += (s, e) => ConnectToServerAndListen();
         }
 
@@ -98,7 +98,8 @@ namespace LAB03
             {
                 try
                 {
-                    tcpClient = new TcpClient("10.139.209.54", 8080);
+                    // LƯU Ý: Nếu chạy Server trên cùng máy, hãy để "127.0.0.1"
+                    tcpClient = new TcpClient("127.0.0.1", 8080);
                     NetworkStream stream = tcpClient.GetStream();
                     UTF8Encoding utf8 = new UTF8Encoding(false);
                     reader = new StreamReader(stream, utf8);
@@ -161,6 +162,10 @@ namespace LAB03
                         {
                             HienThiHoaDonThanhCong();
                             LockSelectedSeats();
+
+                            // Tự động cập nhật dữ liệu xuống file input5.txt ngay khi đặt vé thành công
+                            GhiDuLieuVaoInput5TrucTiep();
+
                             MessageBox.Show(msg, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         });
                     }
@@ -176,6 +181,82 @@ namespace LAB03
                 }
             }
             catch { }
+        }
+
+        // Tự động ghi và cộng dồn dữ liệu vé vào file input5.txt chuẩn 5 dòng
+        private void GhiDuLieuVaoInput5TrucTiep()
+        {
+            try
+            {
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "input5.txt");
+
+                List<string> gheDaChon = new List<string>();
+                foreach (Control ctrl in panelGhe.Controls)
+                {
+                    if (ctrl is Button btn && btn.BackColor == Color.Green)
+                        gheDaChon.Add(btn.Text.Trim());
+                }
+                int soVeMoi = gheDaChon.Count > 0 ? gheDaChon.Count : 1;
+
+                string phongChieu = cbPhongChieu.SelectedItem?.ToString() ?? "Phòng chiếu 1";
+
+                // Đọc dữ liệu cũ từ input5.txt để cộng dồn
+                Dictionary<string, int> duLieuCu = new Dictionary<string, int>();
+                if (File.Exists(path))
+                {
+                    string[] lines = File.ReadAllLines(path);
+                    for (int i = 0; i + 4 < lines.Length; i += 5)
+                    {
+                        string key = $"{lines[i].Trim()}_{lines[i + 2].Trim()}";
+                        if (int.TryParse(lines[i + 4].Trim(), out int daBan))
+                        {
+                            duLieuCu[key] = daBan;
+                        }
+                    }
+                }
+
+                string currentKey = $"{tenPhim}_{phongChieu}";
+                if (duLieuCu.ContainsKey(currentKey))
+                {
+                    duLieuCu[currentKey] += soVeMoi;
+                }
+                else
+                {
+                    duLieuCu[currentKey] = soVeMoi;
+                }
+
+                // Danh sách toàn bộ các phim chuẩn trong hệ thống
+                var danhSachPhimChuan = new List<Tuple<string, decimal, string, int>>
+                {
+                    Tuple.Create("Đào, phở và piano", 45000m, "Phòng chiếu 1", 15),
+                    Tuple.Create("Đào, phở và piano", 45000m, "Phòng chiếu 2", 15),
+                    Tuple.Create("Đào, phở và piano", 45000m, "Phòng chiếu 3", 15),
+                    Tuple.Create("Mai", 100000m, "Phòng chiếu 2", 15),
+                    Tuple.Create("Mai", 100000m, "Phòng chiếu 3", 15),
+                    Tuple.Create("Gặp lại chị bầu", 70000m, "Phòng chiếu 1", 15),
+                    Tuple.Create("Tarot", 90000m, "Phòng chiếu 3", 15)
+                };
+
+                // Ghi đè lại file input5.txt theo đúng chuẩn 5 dòng
+                using (StreamWriter writer = new StreamWriter(path, false, new UTF8Encoding(false)))
+                {
+                    foreach (var phim in danhSachPhimChuan)
+                    {
+                        string key = $"{phim.Item1}_{phim.Item3}";
+                        int soVeBan = duLieuCu.ContainsKey(key) ? duLieuCu[key] : 0;
+
+                        writer.WriteLine(phim.Item1);       // Dòng 1: Tên phim
+                        writer.WriteLine(phim.Item2);       // Dòng 2: Giá vé chuẩn
+                        writer.WriteLine(phim.Item3);       // Dòng 3: Phòng chiếu
+                        writer.WriteLine(phim.Item4);       // Dòng 4: Tổng số vé
+                        writer.WriteLine(soVeBan);          // Dòng 5: Số vé đã bán
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi ghi file input5: " + ex.Message);
+            }
         }
 
         // Sau khi đặt thành công: khóa các ghế mình vừa chọn
@@ -208,7 +289,7 @@ namespace LAB03
                     string seatName = btn.Text.Trim();
                     if (bookedSeats.Contains(seatName))
                     {
-                        if (btn.BackColor == Color.Green) conflict = true; // ghế đang chọn bị người khác đặt trước
+                        if (btn.BackColor == Color.Green) conflict = true; // Ghế đang chọn bị người khác đặt trước
                         btn.BackColor = Color.Red;
                         btn.ForeColor = Color.White;
                         btn.Enabled = false;
@@ -335,7 +416,7 @@ namespace LAB03
 
             rtbHoaDon.Visible = true;
             rtbHoaDon.Clear();
-            rtbHoaDon.AppendText("       HÓA ĐƠN ĐẶT VÉ XEM PHIM      \n");
+            rtbHoaDon.AppendText("       HÓA ĐƠN ĐẶT VÉ XEM PHIM        \n");
             rtbHoaDon.AppendText($" - Khách hàng : {tenKhachHang}\n");
             rtbHoaDon.AppendText($" - Tên phim   : {tenPhim}\n");
             rtbHoaDon.AppendText($" - Phòng chiếu: {phongChieu}\n");

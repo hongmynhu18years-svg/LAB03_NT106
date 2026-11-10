@@ -16,6 +16,8 @@ namespace LAB03
         public Lab03_Bai02()
         {
             InitializeComponent();
+            // Đảm bảo dừng Server khi tắt form để giải phóng Port
+            this.FormClosing += Lab03_Bai02_FormClosing;
         }
 
         private void btnListen_Click(object sender, EventArgs e)
@@ -26,6 +28,7 @@ namespace LAB03
                 btnListen.Text = "Listening...";
                 btnListen.Enabled = false;
 
+                // Khởi chạy Server trên một luồng nền riêng biệt để không làm đơ giao diện WinForms
                 Thread serverThread = new Thread(StartServer);
                 serverThread.IsBackground = true;
                 serverThread.Start();
@@ -36,40 +39,77 @@ namespace LAB03
         {
             try
             {
+<<<<<<< Updated upstream
                 listener = new TcpListener(IPAddress.Any, 9008);
                 listener.Start();
                 AddMessage("Telnet running on 127.0.0.1:9008");
+=======
+                // IPAddress.Any cho phép lắng nghe kết nối từ mọi card mạng (cả Localhost và máy khác trong mạng LAN)
+                listener = new TcpListener(IPAddress.Any, 8080);
+                listener.Start();
+
+                string localIP = GetLocalIPAddress();
+                AddMessage($"Server đang chạy tại IP: {localIP} - Port: 8080");
+>>>>>>> Stashed changes
 
                 while (isListening)
                 {
+                    // Chấp nhận kết nối từ Client (Telnet hoặc chương trình Client khác)
                     TcpClient client = listener.AcceptTcpClient();
-                    AddMessage("New client connected!");
 
-                    // Sử dụng StreamReader để đọc từng dòng khi ấn Enter
+                    string clientIP = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
+                    AddMessage($"Có Client mới kết nối từ IP: {clientIP}");
+
+                    // Lấy NetworkStream để đọc dữ liệu gửi lên từ Client
                     NetworkStream stream = client.GetStream();
                     StreamReader reader = new StreamReader(stream, Encoding.ASCII);
 
                     string line;
-                    // Vòng lặp đọc từng dòng cho đến khi Client ngắt kết nối
+                    // Vòng lặp đọc từng dòng liên tục cho đến khi Client ngắt kết nối
                     while ((line = reader.ReadLine()) != null)
                     {
-                        AddMessage(line);
+                        AddMessage($"{clientIP}: {line}");
                     }
 
                     client.Close();
+                    AddMessage($"Client {clientIP} đã ngắt kết nối.");
                 }
             }
             catch (Exception ex)
             {
-                if (isListening) AddMessage("Lỗi: " + ex.Message);
+                if (isListening)
+                {
+                    AddMessage("Lỗi Server: " + ex.Message);
+                }
             }
+        }
+
+        // Hàm bổ trợ tự động lấy địa chỉ IP LAN hiện tại của máy chủ
+        private string GetLocalIPAddress()
+        {
+            try
+            {
+                var host = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (var ip in host.AddressList)
+                {
+                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        return ip.ToString();
+                    }
+                }
+            }
+            catch
+            {
+                // Bỏ qua nếu có lỗi mạng
+            }
+            return "127.0.0.1";
         }
 
         private void AddMessage(string message)
         {
-            // Kiểm tra an toàn trước khi cập nhật giao diện
             if (this.IsDisposed || lvMessages.IsDisposed) return;
 
+            // Đảm bảo cập nhật giao diện ListView an toàn từ luồng nền thông qua Invoke
             if (lvMessages.InvokeRequired)
             {
                 lvMessages.Invoke(new Action<string>(AddMessage), message);
@@ -79,11 +119,25 @@ namespace LAB03
                 string time = DateTime.Now.ToString("HH:mm:ss");
                 string displayText = $"[{time}] {message}";
 
-                // Thêm vào ListView
                 lvMessages.Items.Add(new ListViewItem(displayText));
 
-                // Tự động cuộn xuống dòng mới nhất
-                lvMessages.EnsureVisible(lvMessages.Items.Count - 1);
+                if (lvMessages.Items.Count > 0)
+                {
+                    lvMessages.EnsureVisible(lvMessages.Items.Count - 1);
+                }
+            }
+        }
+
+        private void Lab03_Bai02_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            isListening = false;
+            try
+            {
+                listener?.Stop();
+            }
+            catch
+            {
+                // Bỏ qua lỗi khi đóng
             }
         }
     }
