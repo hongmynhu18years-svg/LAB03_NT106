@@ -54,7 +54,7 @@
             txtPort.Name = "txtPort";
             txtPort.Size = new Size(150, 29);
             txtPort.TabIndex = 1;
-            txtPort.Text = "8080";
+            txtPort.Text = "9090";
             // 
             // txtMessage
             // 

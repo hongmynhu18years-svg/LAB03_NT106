@@ -39,18 +39,12 @@ namespace LAB03
         {
             try
             {
-<<<<<<< Updated upstream
-                listener = new TcpListener(IPAddress.Any, 9008);
-                listener.Start();
-                AddMessage("Telnet running on 127.0.0.1:9008");
-=======
                 // IPAddress.Any cho phép lắng nghe kết nối từ mọi card mạng (cả Localhost và máy khác trong mạng LAN)
-                listener = new TcpListener(IPAddress.Any, 8080);
+                listener = new TcpListener(IPAddress.Any, 9090);
                 listener.Start();
 
                 string localIP = GetLocalIPAddress();
                 AddMessage($"Server đang chạy tại IP: {localIP} - Port: 8080");
->>>>>>> Stashed changes
 
                 while (isListening)
                 {
@@ -68,6 +62,9 @@ namespace LAB03
                     // Vòng lặp đọc từng dòng liên tục cho đến khi Client ngắt kết nối
                     while ((line = reader.ReadLine()) != null)
                     {
+                        // Nếu dòng rỗng hoặc chỉ chứa khoảng trắng thì bỏ qua
+                        if (string.IsNullOrWhiteSpace(line)) continue;
+
                         AddMessage($"{clientIP}: {line}");
                     }
 
