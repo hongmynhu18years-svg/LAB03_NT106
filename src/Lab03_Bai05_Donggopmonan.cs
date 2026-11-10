@@ -277,9 +277,20 @@ namespace LAB03
         {
             try
             {
+<<<<<<< HEAD
                 // Tạo yêu cầu lấy danh sách
                 Lab03_Bai05_packet packet =
                     new Lab03_Bai05_packet
+=======
+                Lab03_Bai05_packet p = new Lab03_Bai05_packet { Action = "GET_ALL_DETAILS" };
+                string jsonRequest = JsonSerializer.Serialize(p);
+                byte[] requestData = Encoding.UTF8.GetBytes(jsonRequest);
+                Lab03_Bai05_packet response = null;
+
+                await Task.Run(() =>
+                {
+                    using (TcpClient client = new TcpClient("10.139.209.54", 8888))
+>>>>>>> 36f0b2fd08977ab14e54f9b77a2d3f31b84e7892
                     {
                         Action = "GET_ALL_DETAILS"
                     };
