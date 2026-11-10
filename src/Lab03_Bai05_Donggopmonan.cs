@@ -25,9 +25,14 @@ namespace LAB03
 
         private string duongDanAnhGoc = "";
 
-        public Lab03_Bai05_Donggopmonan()
+        // Tạo một biến để lưu IP được truyền từ Form chính sang
+        private string serverIP;
+
+        // SỬA HÀM KHỞI TẠO: Nhận chuỗi IP từ bên ngoài vào
+        public Lab03_Bai05_Donggopmonan(string ip)
         {
             InitializeComponent();
+            this.serverIP = ip; // Lưu lại để dùng cho các hàm bên dưới
         }
 
         // ==========================================

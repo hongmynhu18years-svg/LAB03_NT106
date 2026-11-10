@@ -42,6 +42,8 @@ namespace LAB03
             rdoNguoiDung = new RadioButton();
             txtNguoiDung = new TextBox();
             lblTenNguoiDung = new Label();
+            txtNhapIPServer = new TextBox();
+            lblNhapIP = new Label();
             ((System.ComponentModel.ISupportInitialize)anh_mon).BeginInit();
             SuspendLayout();
             // 
@@ -50,7 +52,7 @@ namespace LAB03
             label1.Anchor = AnchorStyles.None;
             label1.AutoSize = true;
             label1.BackColor = Color.Transparent;
-            label1.Location = new Point(613, 85);
+            label1.Location = new Point(613, 100);
             label1.Name = "label1";
             label1.Size = new Size(0, 20);
             label1.TabIndex = 0;
@@ -61,9 +63,9 @@ namespace LAB03
             ten_mon.BackColor = Color.Transparent;
             ten_mon.Font = new Font("Times New Roman", 10F);
             ten_mon.ForeColor = Color.SaddleBrown;
-            ten_mon.Location = new Point(267, 92);
+            ten_mon.Location = new Point(264, 100);
             ten_mon.Name = "ten_mon";
-            ten_mon.Size = new Size(178, 52);
+            ten_mon.Size = new Size(182, 52);
             ten_mon.TabIndex = 5;
             ten_mon.TextAlign = ContentAlignment.MiddleCenter;
             ten_mon.Click += ten_mon_Click;
@@ -73,7 +75,7 @@ namespace LAB03
             anh_mon.Anchor = AnchorStyles.None;
             anh_mon.BackColor = Color.Transparent;
             anh_mon.BackgroundImageLayout = ImageLayout.Stretch;
-            anh_mon.Location = new Point(273, 171);
+            anh_mon.Location = new Point(273, 186);
             anh_mon.Name = "anh_mon";
             anh_mon.Size = new Size(159, 144);
             anh_mon.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -88,7 +90,7 @@ namespace LAB03
             menu.BackColor = Color.Transparent;
             menu.Font = new Font("Times New Roman", 14F, FontStyle.Bold);
             menu.ForeColor = Color.SaddleBrown;
-            menu.Location = new Point(576, 131);
+            menu.Location = new Point(576, 146);
             menu.Name = "menu";
             menu.Size = new Size(68, 22);
             menu.TabIndex = 7;
@@ -105,7 +107,7 @@ namespace LAB03
             tim.FlatStyle = FlatStyle.Flat;
             tim.Font = new Font("Times New Roman", 15F);
             tim.ForeColor = Color.PapayaWhip;
-            tim.Location = new Point(106, 101);
+            tim.Location = new Point(110, 109);
             tim.Name = "tim";
             tim.Size = new Size(66, 32);
             tim.TabIndex = 9;
@@ -122,7 +124,7 @@ namespace LAB03
             xoa.FlatStyle = FlatStyle.Flat;
             xoa.Font = new Font("Times New Roman", 15F);
             xoa.ForeColor = Color.SaddleBrown;
-            xoa.Location = new Point(118, 209);
+            xoa.Location = new Point(118, 224);
             xoa.Name = "xoa";
             xoa.Size = new Size(66, 41);
             xoa.TabIndex = 10;
@@ -139,7 +141,7 @@ namespace LAB03
             them.FlatStyle = FlatStyle.Flat;
             them.Font = new Font("Times New Roman", 15F);
             them.ForeColor = Color.SaddleBrown;
-            them.Location = new Point(118, 308);
+            them.Location = new Point(118, 336);
             them.Name = "them";
             them.Size = new Size(66, 32);
             them.TabIndex = 11;
@@ -154,7 +156,7 @@ namespace LAB03
             list_mon.DrawMode = DrawMode.OwnerDrawFixed;
             list_mon.Font = new Font("Times New Roman", 12F, FontStyle.Italic, GraphicsUnit.Point, 0);
             list_mon.FormattingEnabled = true;
-            list_mon.Location = new Point(541, 156);
+            list_mon.Location = new Point(541, 171);
             list_mon.Name = "list_mon";
             list_mon.Size = new Size(140, 148);
             list_mon.TabIndex = 12;
@@ -171,6 +173,7 @@ namespace LAB03
             rdoCongDong.Name = "rdoCongDong";
             rdoCongDong.Size = new Size(105, 24);
             rdoCongDong.TabIndex = 13;
+            rdoCongDong.TabStop = true;
             rdoCongDong.Text = "Cộng đồng";
             rdoCongDong.UseVisualStyleBackColor = false;
             rdoCongDong.CheckedChanged += rdoCongDong_CheckedChanged;
@@ -209,13 +212,36 @@ namespace LAB03
             lblTenNguoiDung.Text = "Tên của bạn";
             lblTenNguoiDung.Click += lblTenNguoiDung_Click;
             // 
+            // txtNhapIPServer
+            // 
+            txtNhapIPServer.Location = new Point(554, 422);
+            txtNhapIPServer.Name = "txtNhapIPServer";
+            txtNhapIPServer.Size = new Size(191, 27);
+            txtNhapIPServer.TabIndex = 17;
+            txtNhapIPServer.TextChanged += txtNhapIPServer_TextChanged;
+            // 
+            // lblNhapIP
+            // 
+            lblNhapIP.AutoSize = true;
+            lblNhapIP.BackColor = Color.AntiqueWhite;
+            lblNhapIP.Font = new Font("Times New Roman", 13F, FontStyle.Bold);
+            lblNhapIP.ForeColor = Color.SaddleBrown;
+            lblNhapIP.Location = new Point(424, 425);
+            lblNhapIP.Name = "lblNhapIP";
+            lblNhapIP.Size = new Size(124, 20);
+            lblNhapIP.TabIndex = 18;
+            lblNhapIP.Text = "Nhập IP server";
+            lblNhapIP.Click += lblNhapIP_Click;
+            // 
             // Lab03_Bai05
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
-            ClientSize = new Size(807, 423);
+            ClientSize = new Size(807, 452);
+            Controls.Add(lblNhapIP);
+            Controls.Add(txtNhapIPServer);
             Controls.Add(lblTenNguoiDung);
             Controls.Add(txtNguoiDung);
             Controls.Add(rdoNguoiDung);
@@ -252,5 +278,7 @@ namespace LAB03
         private RadioButton rdoNguoiDung;
         private TextBox txtNguoiDung;
         private Label lblTenNguoiDung;
+        private TextBox txtNhapIPServer;
+        private Label lblNhapIP;
     }
 }

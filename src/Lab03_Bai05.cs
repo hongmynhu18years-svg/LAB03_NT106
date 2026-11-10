@@ -4,19 +4,19 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.IO;            // Thêm thư viện xử lý MemoryStream cho ảnh
-using System.Net.Sockets;   // Thêm thư viện mạng
+using System.IO;
+using System.Net.Sockets;
 using System.Text;
-using System.Text.Json;     // Thêm thư viện phân tích JSON
-using System.Windows.Forms;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace LAB03
 {
     public partial class Lab03_Bai05 : Form
     {
         private string monAnHienTai = "";
-        // Tên user mặc định (Dùng cho chức năng RANDOM_MINE sau này)
         private string currentUser = "Người dùng ẩn danh";
+
         public Lab03_Bai05()
         {
             InitializeComponent();
@@ -24,30 +24,35 @@ namespace LAB03
 
         private void Lab03_Bai05_Load(object sender, EventArgs e)
         {
-            // Đưa label tên món và khung ảnh lên trên cùng để không bị tấm thớt/đĩa che khuất
             ten_mon.BringToFront();
             anh_mon.BringToFront();
-
             LoadMenu();
         }
+
         private void LoadMenu()
         {
             list_mon.Items.Clear();
+            string serverIP = txtNhapIPServer.Text.Trim();
+
+            // 1. Nếu chưa có IP, báo trạng thái và KHÔNG kết nối
+            if (string.IsNullOrEmpty(serverIP))
+            {
+                list_mon.Items.Add("Vui lòng nhập IP Server");
+                list_mon.Items.Add("để tải Menu...");
+                return;
+            }
 
             try
             {
-                // 1. Tạo gói tin yêu cầu lấy danh sách
                 Lab03_Bai05_packet p = new Lab03_Bai05_packet { Action = "GET_LIST" };
                 string jsonRequest = JsonSerializer.Serialize(p);
                 byte[] requestData = Encoding.UTF8.GetBytes(jsonRequest);
 
-                // 2. Kết nối tới Server
-                using (TcpClient client = new TcpClient("127.0.0.1", 8888))
+                using (TcpClient client = new TcpClient(serverIP, 8888))
                 {
                     NetworkStream stream = client.GetStream();
                     stream.Write(requestData, 0, requestData.Length);
 
-                    // 3. Nhận phản hồi danh sách từ Server
                     byte[] buffer = new byte[1024 * 5000];
                     int bytesRead = stream.Read(buffer, 0, buffer.Length);
 
@@ -58,10 +63,7 @@ namespace LAB03
 
                         if (response.Action == "LIST_RESULT" && !string.IsNullOrEmpty(response.TenMonAn))
                         {
-                            // Giải mã chuỗi JSON danh sách món ăn
                             List<string> danhSachMon = JsonSerializer.Deserialize<List<string>>(response.TenMonAn);
-
-                            // Đưa từng món lên ListBox (khung MENU)
                             foreach (var mon in danhSachMon)
                             {
                                 list_mon.Items.Add(mon);
@@ -78,6 +80,14 @@ namespace LAB03
 
         private async void xoa_Click(object sender, EventArgs e)
         {
+            string serverIP = txtNhapIPServer.Text.Trim();
+            // 2. Chặn lỗi báo trống IP
+            if (string.IsNullOrEmpty(serverIP))
+            {
+                MessageBox.Show("Vui lòng nhập IP của Server trước khi Xóa!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             if (list_mon.SelectedItem == null)
             {
                 MessageBox.Show("Vui lòng nhấp chọn một món bên MENU để xóa!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -89,7 +99,6 @@ namespace LAB03
 
             if (xacNhan == DialogResult.Yes)
             {
-                // 1. Tạm khóa nút xóa để tránh người dùng bấm liên tục gây treo
                 if (sender is Button btnXoa) btnXoa.Enabled = false;
 
                 try
@@ -104,12 +113,10 @@ namespace LAB03
                     byte[] requestData = Encoding.UTF8.GetBytes(jsonRequest);
                     Lab03_Bai05_packet response = null;
 
-                    // 2. ĐẨY LỆNH GIAO TIẾP MẠNG XUỐNG BACKGROUND THREAD
                     await Task.Run(() =>
                     {
-                        using (TcpClient client = new TcpClient("127.0.0.1", 8888))
+                        using (TcpClient client = new TcpClient(serverIP, 8888))
                         {
-                            // Thêm Timeout 3 giây chống kẹt mạng
                             client.ReceiveTimeout = 3000;
                             client.SendTimeout = 3000;
 
@@ -127,14 +134,11 @@ namespace LAB03
                         }
                     });
 
-                    // 3. XỬ LÝ GIAO DIỆN SAU KHI SERVER TRẢ KẾT QUẢ
                     if (response != null)
                     {
                         if (response.Action == "DELETE_SUCCESS")
                         {
                             MessageBox.Show("Đã xóa thành công món: " + monCanXoa, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                            // Gọi hàm LoadMenuAsync bất đồng bộ thay vì LoadMenu() cũ
                             await LoadMenuAsync();
                         }
                         else
@@ -149,16 +153,21 @@ namespace LAB03
                 }
                 finally
                 {
-                    // 4. Mở khóa lại nút xóa
                     if (sender is Button xoa) xoa.Enabled = true;
                 }
             }
         }
 
-        // CHỨC NĂNG QUAN TRỌNG: TÌM MÓN NGẪU NHIÊN QUA TCP
         private async void tim_Click(object sender, EventArgs e)
         {
-            // 1. ĐỌC DỮ LIỆU TỪ GIAO DIỆN TRƯỚC (Bắt buộc làm ngoài Task.Run)
+            string serverIP = txtNhapIPServer.Text.Trim();
+            // 3. Chặn lỗi báo trống IP
+            if (string.IsNullOrEmpty(serverIP))
+            {
+                MessageBox.Show("Vui lòng nhập IP của Server trước khi Tìm!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             string nguoiDongGop = txtNguoiDung.Text.Trim();
             bool isCongDong = rdoCongDong.Checked;
 
@@ -168,7 +177,6 @@ namespace LAB03
                 return;
             }
 
-            // Tạm khóa nút tìm kiếm để tránh người dùng bấm liên tục gây treo
             if (sender is Button btnTim) btnTim.Enabled = false;
 
             try
@@ -179,10 +187,8 @@ namespace LAB03
 
                 string jsonRequest = JsonSerializer.Serialize(p);
                 byte[] requestData = Encoding.UTF8.GetBytes(jsonRequest);
-
                 Lab03_Bai05_packet response = null;
 
-                // 2. ĐẨY TÁC VỤ MẠNG XUỐNG LUỒNG NGẦM (Không làm đơ Form)
                 await Task.Run(() =>
                 {
                     using (TcpClient client = new TcpClient("10.139.209.155", 8888))
@@ -191,7 +197,6 @@ namespace LAB03
                         stream.Write(requestData, 0, requestData.Length);
 
                         byte[] buffer = new byte[1024 * 5000];
-                        // Lệnh Read này sẽ chờ ngầm, Form vẫn kéo thả mượt mà
                         int bytesRead = stream.Read(buffer, 0, buffer.Length);
 
                         if (bytesRead > 0)
@@ -202,16 +207,13 @@ namespace LAB03
                     }
                 });
 
-                // 3. CẬP NHẬT GIAO DIỆN (Sau khi Task.Run chạy xong, an toàn để cập nhật UI)
                 if (response != null)
                 {
                     if (response.Action == "RESULT")
                     {
-                        // Hiển thị tên món ăn
                         ten_mon.Text = $"{response.TenMonAn} (Bởi: {response.NguoiDongGop})";
                         ten_mon.ForeColor = Color.Black;
 
-                        // Hiển thị hình ảnh
                         if (!string.IsNullOrEmpty(response.HinhAnhBase64))
                         {
                             try
@@ -219,7 +221,6 @@ namespace LAB03
                                 byte[] imgBytes = Convert.FromBase64String(response.HinhAnhBase64);
                                 using (MemoryStream ms = new MemoryStream(imgBytes))
                                 {
-                                    // Thay vì gán trực tiếp bằng ms, dùng bản sao để tránh lỗi khóa file/stream
                                     anh_mon.Image = new Bitmap(Image.FromStream(ms));
                                 }
                             }
@@ -247,23 +248,32 @@ namespace LAB03
             }
             finally
             {
-                // 4. MỞ KHÓA NÚT BẤM SAU KHI XONG HOẶC CÓ LỖI
                 if (sender is Button tim) tim.Enabled = true;
             }
         }
 
-
         private async void btnThem_Click(object sender, EventArgs e)
         {
-            // Mở form Đóng Góp
-            Lab03_Bai05_Donggopmonan frmDongGop = new Lab03_Bai05_Donggopmonan();
-            // Dùng ShowDialog() để ứng dụng chờ cho đến khi bạn tắt form Đóng góp đi
+            string serverIP = txtNhapIPServer.Text.Trim();
+            // 4. Chặn lỗi báo trống IP
+            if (string.IsNullOrEmpty(serverIP))
+            {
+                MessageBox.Show("Vui lòng nhập IP của Server trước khi Thêm đóng góp!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Lab03_Bai05_Donggopmonan frmDongGop = new Lab03_Bai05_Donggopmonan(serverIP);
             frmDongGop.ShowDialog();
-            // Ngay khi form Đóng góp vừa bị tắt, lập tức tự động tải lại Menu ở form chính
+
             await LoadMenuAsync();
         }
+
         private async Task LoadMenuAsync()
         {
+            string serverIP = txtNhapIPServer.Text.Trim();
+            // Thoát ngầm nếu IP trống
+            if (string.IsNullOrEmpty(serverIP)) return;
+
             try
             {
                 Lab03_Bai05_packet p = new Lab03_Bai05_packet { Action = "GET_LIST" };
@@ -292,8 +302,6 @@ namespace LAB03
                 if (response != null && response.Action == "LIST_RESULT")
                 {
                     List<string> menuItems = JsonSerializer.Deserialize<List<string>>(response.TenMonAn);
-
-                    // Ở đây tôi thấy bạn dùng ListBox có tên là list_mon thay vì RichTextBox
                     list_mon.Items.Clear();
                     foreach (string item in menuItems)
                     {
@@ -306,6 +314,7 @@ namespace LAB03
                 // Bỏ qua lỗi ngầm
             }
         }
+
         private void list_mon_DrawItem(object sender, DrawItemEventArgs e)
         {
             if (e.Index < 0) return;
@@ -320,30 +329,17 @@ namespace LAB03
             }
             e.DrawFocusRectangle();
         }
+
         private void list_mon_SelectedIndexChanged(object sender, EventArgs e) { }
         private void ten_mon_Click(object sender, EventArgs e) { }
         private void anh_mon_Click(object sender, EventArgs e) { }
         private void menu_Click(object sender, EventArgs e) { }
         private void list_mon_Click(object sender, EventArgs e) { }
-
-        private void txtNguoiDung_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void rdoNguoiDung_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void rdoCongDong_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblTenNguoiDung_Click(object sender, EventArgs e)
-        {
-
-        }
+        private void txtNguoiDung_TextChanged(object sender, EventArgs e) { }
+        private void rdoNguoiDung_CheckedChanged(object sender, EventArgs e) { }
+        private void rdoCongDong_CheckedChanged(object sender, EventArgs e) { }
+        private void lblTenNguoiDung_Click(object sender, EventArgs e) { }
+        private void txtNhapIPServer_TextChanged(object sender, EventArgs e) { }
+        private void lblNhapIP_Click(object sender, EventArgs e) { }
     }
 }

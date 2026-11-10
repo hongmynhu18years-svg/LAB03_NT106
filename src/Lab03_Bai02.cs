@@ -35,6 +35,7 @@ namespace LAB03
             }
         }
 
+        // Hàm chạy trên luồng chính, chỉ làm nhiệm vụ đón kết nối
         private void StartServer()
         {
             try
@@ -102,6 +103,7 @@ namespace LAB03
             return "127.0.0.1";
         }
 
+        // Hàm cập nhật giao diện an toàn (Thread-safe)
         private void AddMessage(string message)
         {
             if (this.IsDisposed || lvMessages.IsDisposed) return;
