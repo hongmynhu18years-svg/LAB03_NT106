@@ -172,7 +172,6 @@ namespace LAB03
         }
         private void ParseAndDisplayChat(string payload)
         {
-            // Kiểm tra nội dung có chứa gói đính kèm ATTACH_V1 hay không
             int attachIdx = payload.IndexOf(AttachmentPrefix, StringComparison.Ordinal);
             if (attachIdx >= 0)
             {
@@ -186,24 +185,20 @@ namespace LAB03
                     {
                         string fileName = Encoding.UTF8.GetString(Convert.FromBase64String(parts[0]));
                         byte[] fileBytes = Convert.FromBase64String(parts[1]);
-
                         string ext = Path.GetExtension(fileName).ToLowerInvariant();
-                        if (ext == ".txt")
-                        {
-                            string textContent = Encoding.UTF8.GetString(fileBytes);
-                            AddChat($"{header}[File TXT: {fileName}]: {textContent}");
-                        }
-                        else if (ext == ".jpg" || ext == ".png")
-                        {
-                            string displayMsg = $"{header}[Hình ảnh: {fileName}] ({fileBytes.Length / 1024} KB) - (Double click để xem)";
 
-                            // Thêm tin nhắn vào lstChat và lưu dữ liệu byte của ảnh theo index dòng
+                        if (ext == ".txt" || ext == ".jpg" || ext == ".png")
+                        {
+                            string fileTypeLabel = (ext == ".txt") ? "File TXT" : "Hình ảnh";
+                            string displayMsg = $"{header}[{fileTypeLabel}: {fileName}] ({fileBytes.Length / 1024} KB) - (Double click để xem)";
+
+                            // Lưu dữ liệu file vào cache theo vị trí dòng
                             int lineIndex = lstChat.Items.Count;
-                            imageCache[lineIndex] = (fileName, fileBytes);
+                            fileCache[lineIndex] = (fileName, ext, fileBytes);
 
                             AddChat(displayMsg);
+                            return;
                         }
-                        return;
                     }
                     catch
                     {
@@ -223,12 +218,25 @@ namespace LAB03
             if (selectedIndex < 0)
                 return;
 
-            // Kiểm tra xem dòng được nhấp đôi có dữ liệu hình ảnh lưu trữ không
-            if (imageCache.TryGetValue(selectedIndex, out var imgData))
+            // Kiểm tra xem dòng được chọn có chứa dữ liệu file đính kèm không
+            if (fileCache.TryGetValue(selectedIndex, out var fileData))
             {
-                using (var frm = new Lab03_Bai06_Client_Anh($"Xem ảnh: {imgData.FileName}", imgData.Data))
+                if (fileData.Extension == ".txt")
                 {
-                    frm.ShowDialog(this);
+                    // Giải mã byte[] thành chuỗi văn bản UTF-8 và bật FormXemText
+                    string textContent = Encoding.UTF8.GetString(fileData.Data);
+                    using (var frm = new Lab03_Bai06_Client_TEXT($"Xem file: {fileData.FileName}", textContent))
+                    {
+                        frm.ShowDialog(this);
+                    }
+                }
+                else if (fileData.Extension == ".jpg" || fileData.Extension == ".png")
+                {
+                    // Bật FormXemAnh cho hình ảnh
+                    using (var frm = new Lab03_Bai06_Client_Anh($"Xem ảnh: {fileData.FileName}", fileData.Data))
+                    {
+                        frm.ShowDialog(this);
+                    }
                 }
             }
         }
@@ -352,7 +360,7 @@ namespace LAB03
             }
         }
 
-        private readonly Dictionary<int, (string FileName, byte[] Data)> imageCache = new Dictionary<int, (string, byte[])>();
+        private readonly Dictionary<int, (string FileName, string Extension, byte[] Data)> fileCache = new Dictionary<int, (string, string, byte[])>();
 
         private void btnDisconnect_Click(object sender, EventArgs e)
         {
