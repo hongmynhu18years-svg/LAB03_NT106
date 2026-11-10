@@ -26,12 +26,14 @@ namespace LAB03
                 btnListen.Text = "Listening...";
                 btnListen.Enabled = false;
 
+                // Luồng chính để đón Client mới
                 Thread serverThread = new Thread(StartServer);
                 serverThread.IsBackground = true;
                 serverThread.Start();
             }
         }
 
+        // Hàm chạy trên luồng chính, chỉ làm nhiệm vụ đón kết nối
         private void StartServer()
         {
             try
@@ -42,21 +44,14 @@ namespace LAB03
 
                 while (isListening)
                 {
+                    // Chờ Client kết nối (Hàm này sẽ block cho đến khi có Client)
                     TcpClient client = listener.AcceptTcpClient();
-                    AddMessage("New client connected!");
+                    AddMessage($"New client connected: {client.Client.RemoteEndPoint}");
 
-                    // Sử dụng StreamReader để đọc từng dòng khi ấn Enter
-                    NetworkStream stream = client.GetStream();
-                    StreamReader reader = new StreamReader(stream, Encoding.ASCII);
-
-                    string line;
-                    // Vòng lặp đọc từng dòng cho đến khi Client ngắt kết nối
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        AddMessage(line);
-                    }
-
-                    client.Close();
+                    // TẠO LUỒNG MỚI cho Client này để luồng chính quay lại đón Client khác
+                    Thread clientThread = new Thread(() => HandleClient(client));
+                    clientThread.IsBackground = true;
+                    clientThread.Start();
                 }
             }
             catch (Exception ex)
@@ -65,9 +60,39 @@ namespace LAB03
             }
         }
 
+        // Hàm xử lý dữ liệu riêng cho từng Client
+        private void HandleClient(TcpClient client)
+        {
+            try
+            {
+                NetworkStream stream = client.GetStream();
+                StreamReader reader = new StreamReader(stream, Encoding.ASCII);
+                string line;
+
+                // Vòng lặp đọc dữ liệu từ Client này
+                while ((line = reader.ReadLine()) != null)
+                {
+                    AddMessage(line);
+                }
+            }
+            catch (Exception)
+            {
+                // Bỏ qua lỗi khi Client ngắt kết nối đột ngột
+            }
+            finally
+            {
+                // Đảm bảo đóng kết nối khi xong việc
+                if (client.Connected)
+                {
+                    AddMessage("Client disconnected.");
+                }
+                client.Close();
+            }
+        }
+
+        // Hàm cập nhật giao diện an toàn (Thread-safe)
         private void AddMessage(string message)
         {
-            // Kiểm tra an toàn trước khi cập nhật giao diện
             if (this.IsDisposed || lvMessages.IsDisposed) return;
 
             if (lvMessages.InvokeRequired)
@@ -79,12 +104,16 @@ namespace LAB03
                 string time = DateTime.Now.ToString("HH:mm:ss");
                 string displayText = $"[{time}] {message}";
 
-                // Thêm vào ListView
                 lvMessages.Items.Add(new ListViewItem(displayText));
-
-                // Tự động cuộn xuống dòng mới nhất
                 lvMessages.EnsureVisible(lvMessages.Items.Count - 1);
             }
+        }
+
+        // Dọn dẹp tài nguyên khi đóng Form
+        private void Lab03_Bai02_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            isListening = false;
+            listener?.Stop();
         }
     }
 }

@@ -16,9 +16,14 @@ namespace LAB03
     {
         private string duongDanAnhGoc = "";
 
-        public Lab03_Bai05_Donggopmonan()
+        // Tạo một biến để lưu IP được truyền từ Form chính sang
+        private string serverIP;
+
+        // SỬA HÀM KHỞI TẠO: Nhận chuỗi IP từ bên ngoài vào
+        public Lab03_Bai05_Donggopmonan(string ip)
         {
             InitializeComponent();
+            this.serverIP = ip; // Lưu lại để dùng cho các hàm bên dưới
         }
 
         private void add_picture_Click(object sender, EventArgs e)
@@ -42,7 +47,6 @@ namespace LAB03
                 return;
             }
 
-            // Lưu lại button gửi để mở khóa ở khối finally
             Button btnSend = sender as Button;
             if (btnSend != null) btnSend.Enabled = false;
 
@@ -67,10 +71,10 @@ namespace LAB03
                 byte[] data = Encoding.UTF8.GetBytes(json);
                 Lab03_Bai05_packet response = null;
 
-                // Gửi lệnh ngầm xuống background thread
                 await Task.Run(() =>
                 {
-                    using (TcpClient client = new TcpClient("10.139.209.155", 8888))
+                    // DÙNG BIẾN serverIP THAY VÌ IP CỨNG
+                    using (TcpClient client = new TcpClient(serverIP, 8888))
                     {
                         NetworkStream stream = client.GetStream();
                         stream.Write(data, 0, data.Length);
@@ -105,7 +109,6 @@ namespace LAB03
             }
             finally
             {
-                // Sửa lỗi cú pháp biến mở khóa nút bấm
                 if (btnSend != null) btnSend.Enabled = true;
             }
         }
@@ -124,7 +127,8 @@ namespace LAB03
 
                 await Task.Run(() =>
                 {
-                    using (TcpClient client = new TcpClient("10.139.209.54", 8888))
+                    // DÙNG BIẾN serverIP THAY VÌ IP CỨNG
+                    using (TcpClient client = new TcpClient(serverIP, 8888))
                     {
                         client.ReceiveTimeout = 3000;
                         client.SendTimeout = 3000;
@@ -170,10 +174,8 @@ namespace LAB03
             }
         }
 
-        // Sự kiện chuyển Tab trên giao diện TabControl
         private async void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Kiểm tra nếu đang ở tab danh sách/đánh giá (index 1 tùy theo thiết kế giao diện của bạn)
             if (tabControl1.SelectedIndex == 1)
             {
                 await LoadDanhSachAsync();

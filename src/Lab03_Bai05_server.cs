@@ -91,6 +91,16 @@ namespace LAB03
 
                 server = new TcpListener(IPAddress.Any, 8888);
                 server.Start();
+                // Tự động dò IP LAN hiện tại của máy Server
+                string localIP = "127.0.0.1";
+                using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+                {
+                    socket.Connect("8.8.8.8", 65530);
+                    IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
+                    localIP = endPoint.Address.ToString();
+                }
+
+                Invoke(new Action(() => Rtb_log.AppendText($"\n---> MÁY CLIENT HÃY NHẬP IP NÀY: {localIP}\n\n")));
                 isRunning = true;
 
                 Rtb_log.AppendText("Server đã reset CSDL và đang chạy ở Port 8888...\n");
@@ -163,7 +173,7 @@ namespace LAB03
                                 string tenNguoiDung = string.IsNullOrWhiteSpace(p.NguoiDongGop) ? "Quản lý quán" : p.NguoiDongGop;
                                 Invoke(new Action(() => Rtb_log.AppendText($"Yêu cầu THÊM MÓN từ {tenNguoiDung} (IP: {clientIP})\n")));
 
-                                string fileName = "";
+                                string fileName = ""; // KHỞI TẠO BIẾN fileName ĐỂ TRÁNH LỖI CS0103
                                 if (!string.IsNullOrEmpty(p.HinhAnhBase64))
                                 {
                                     fileName = "img_" + DateTime.Now.Ticks + ".png";
@@ -206,9 +216,10 @@ namespace LAB03
                                         cmd.Parameters.AddWithValue("@name", p.NguoiDongGop?.Trim() ?? "");
                                     }
 
-                                    using (var reader = cmd.ExecuteReader())
+                                    using (var reader = cmd.ExecuteReader()) // KHAI BÁO reader ĐỂ TRÁNH LỖI CS0103
                                     {
-                                        Lab03_Bai05_packet responsePacket = new Lab03_Bai05_packet();
+                                        Lab03_Bai05_packet responsePacket = new Lab03_Bai05_packet(); // KHAI BÁO responsePacket ĐỂ TRÁNH LỖI CS0103
+
                                         if (reader.Read())
                                         {
                                             responsePacket.Action = "RESULT";
@@ -218,10 +229,22 @@ namespace LAB03
                                             string imgFile = reader["HinhAnh"]?.ToString();
                                             if (!string.IsNullOrEmpty(imgFile))
                                             {
+                                                // TÌM Ở BIN/DEBUG
                                                 string pathInDebug = Path.Combine(Application.StartupPath, imgFile);
+                                                // TÌM Ở RESOURCES GỐC
+                                                string pathInResources = Path.Combine(Application.StartupPath, @"..\..\..\src\Resources", imgFile);
+
                                                 if (File.Exists(pathInDebug))
                                                 {
                                                     responsePacket.HinhAnhBase64 = Convert.ToBase64String(File.ReadAllBytes(pathInDebug));
+                                                }
+                                                else if (File.Exists(pathInResources))
+                                                {
+                                                    responsePacket.HinhAnhBase64 = Convert.ToBase64String(File.ReadAllBytes(pathInResources));
+                                                }
+                                                else
+                                                {
+                                                    Invoke(new Action(() => Rtb_log.AppendText($"[CẢNH BÁO] Không tìm thấy ảnh '{imgFile}' ở cả bin và Resources!\n")));
                                                 }
                                             }
                                         }
