@@ -124,7 +124,7 @@ namespace LAB03
 
                 await Task.Run(() =>
                 {
-                    using (TcpClient client = new TcpClient("127.0.0.1", 8888))
+                    using (TcpClient client = new TcpClient("10.139.209.54", 8888))
                     {
                         client.ReceiveTimeout = 3000;
                         client.SendTimeout = 3000;
