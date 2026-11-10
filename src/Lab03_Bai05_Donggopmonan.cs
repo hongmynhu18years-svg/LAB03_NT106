@@ -92,11 +92,10 @@ namespace LAB03
 
                     await stream.FlushAsync(cts.Token);
 
-                    // Báo cho Server biết Client đã gửi xong
-                    // dữ liệu ở chiều gửi.
+                    // Báo Server đã gửi xong dữ liệu
                     client.Client.Shutdown(SocketShutdown.Send);
 
-                    // Nhận toàn bộ dữ liệu phản hồi
+                    // Nhận toàn bộ phản hồi từ Server
                     using (MemoryStream memoryStream = new MemoryStream())
                     {
                         byte[] buffer = new byte[8192];
@@ -135,7 +134,7 @@ namespace LAB03
                             );
 
                         // Chuyển JSON thành đối tượng
-                        Lab03_Bai05_packet response =
+                        Lab03_Bai05_packet? response =
                             JsonSerializer.Deserialize<Lab03_Bai05_packet>(
                                 jsonResponse
                             );
@@ -174,7 +173,7 @@ namespace LAB03
                 return;
             }
 
-            Button btnSend = sender as Button;
+            Button? btnSend = sender as Button;
 
             if (btnSend != null)
                 btnSend.Enabled = false;
@@ -273,7 +272,6 @@ namespace LAB03
         // TẢI DANH SÁCH MÓN ĂN ĐÓNG GÓP
         // ==========================================
 
-
         private async Task LoadDanhSachAsync()
         {
             try
@@ -289,12 +287,13 @@ namespace LAB03
                 Lab03_Bai05_packet response =
                     await SendPacketAsync(packet);
 
-                // Kiểm tra phản hồi
+                // Kiểm tra phản hồi lỗi
                 if (response.Action == "ERROR")
                 {
                     throw new Exception(response.TenMonAn);
                 }
 
+                // Kiểm tra loại phản hồi
                 if (response.Action != "DETAILS_RESULT")
                 {
                     throw new Exception(
@@ -309,7 +308,7 @@ namespace LAB03
                     return;
                 }
 
-                // Phân tích JSON
+                // Phân tích JSON danh sách
                 using (JsonDocument doc =
                     JsonDocument.Parse(response.TenMonAn))
                 {
@@ -327,17 +326,20 @@ namespace LAB03
 
                     foreach (JsonElement element in root.EnumerateArray())
                     {
-                        string stt = GetJsonValue(element, "STT");
+                        // Lấy dữ liệu từng món ăn
+                        string stt =
+                            GetJsonValue(element, "STT");
 
-                        string nguoi = GetJsonValue(
-                            element, "NguoiDongGop");
+                        string nguoi =
+                            GetJsonValue(element, "NguoiDongGop");
 
-                        string mon = GetJsonValue(
-                            element, "TenMonAn");
+                        string mon =
+                            GetJsonValue(element, "TenMonAn");
 
-                        string time = GetJsonValue(
-                            element, "ThoiGian");
+                        string time =
+                            GetJsonValue(element, "ThoiGian");
 
+                        // Tạo dòng ListView
                         ListViewItem item =
                             new ListViewItem(stt);
 
@@ -387,7 +389,6 @@ namespace LAB03
                 );
             }
         }
-
 
         // ==========================================
         // HÀM ĐỌC GIÁ TRỊ TỪ JSON

@@ -43,6 +43,15 @@ namespace LAB03
         // 2. Hàm Gửi dữ liệu
         private void btnSend_Click(object sender, EventArgs e)
         {
+            // 1. Kiểm tra nếu ô tin nhắn bị trống hoặc chỉ chứa khoảng trắng
+            if (string.IsNullOrWhiteSpace(txtMessage.Text))
+            {
+                MessageBox.Show("Vui lòng nhập tin nhắn trước khi gửi!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtMessage.Focus(); // Đưa con trỏ chuột vào lại ô nhập liệu
+                return; // Dừng hàm, không chạy xuống dưới
+            }
+
+            // 2. Kiểm tra kết nối và gửi dữ liệu
             if (tcpClient != null && tcpClient.Connected)
             {
                 try
