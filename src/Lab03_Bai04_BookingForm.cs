@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -24,13 +23,6 @@ namespace LAB03
         private decimal tongTien = 0;
         private volatile string currentMovieKey = "";
 
-        // Các biến cho hiệu ứng GIF
-        private int currentFrame = 0;
-        private int frameCount1 = 0;
-        private int frameCount2 = 0;
-        private FrameDimension dimension1;
-        private FrameDimension dimension2;
-
         public Lab03_Bai04_BookingForm(string phim, decimal giaChuan, string khachHang)
         {
             InitializeComponent();
@@ -47,14 +39,11 @@ namespace LAB03
             cbPhongChieu.Items.Clear();
             if (tenPhim == "Đào, phở và piano")
             {
-                cbPhongChieu.Items.Add("Phòng chiếu 1");
-                cbPhongChieu.Items.Add("Phòng chiếu 2");
-                cbPhongChieu.Items.Add("Phòng chiếu 3");
+                cbPhongChieu.Items.AddRange(new object[] { "Phòng chiếu 1", "Phòng chiếu 2", "Phòng chiếu 3" });
             }
             else if (tenPhim == "Mai")
             {
-                cbPhongChieu.Items.Add("Phòng chiếu 2");
-                cbPhongChieu.Items.Add("Phòng chiếu 3");
+                cbPhongChieu.Items.AddRange(new object[] { "Phòng chiếu 2", "Phòng chiếu 3" });
             }
             else if (tenPhim == "Gặp lại chị bầu")
             {
@@ -67,9 +56,8 @@ namespace LAB03
 
             if (cbPhongChieu.Items.Count > 0)
                 cbPhongChieu.SelectedIndex = 0;
-            UpdateCurrentMovieKey();
 
-            // Kết nối khi form đã có Handle để tránh lỗi Invoke từ luồng ngầm
+            UpdateCurrentMovieKey();
             this.Load += (s, e) => ConnectToServerAndListen();
         }
 
@@ -79,17 +67,13 @@ namespace LAB03
             currentMovieKey = $"{tenPhim}_{phong}";
         }
 
-        private string GetCurrentMovieKey()
-        {
-            return currentMovieKey;
-        }
+        private string GetCurrentMovieKey() => currentMovieKey;
 
         private void RunOnUI(Action action)
         {
             if (IsDisposed || !IsHandleCreated) return;
             try { Invoke(action); }
-            catch (ObjectDisposedException) { }
-            catch (InvalidOperationException) { }
+            catch { }
         }
 
         private void ConnectToServerAndListen()
@@ -98,7 +82,6 @@ namespace LAB03
             {
                 try
                 {
-                    // LƯU Ý: Nếu chạy Server trên cùng máy, hãy để "127.0.0.1"
                     tcpClient = new TcpClient("127.0.0.1", 8080);
                     NetworkStream stream = tcpClient.GetStream();
                     UTF8Encoding utf8 = new UTF8Encoding(false);
@@ -114,19 +97,18 @@ namespace LAB03
                 }
                 catch
                 {
-                    Thread.Sleep(200); // Chờ Server khởi động xong
+                    Thread.Sleep(200);
                 }
             }
 
-            MessageBox.Show("Không thể kết nối đến Server 8080! Hãy kiểm tra lại Server.",
-                "Lỗi kết nối", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("Không thể kết nối đến Server Port 8080!", "Lỗi kết nối", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void SendToServer(string message)
         {
             lock (this)
             {
-                writer.WriteLine(message);
+                writer?.WriteLine(message);
             }
         }
 
@@ -162,10 +144,7 @@ namespace LAB03
                         {
                             HienThiHoaDonThanhCong();
                             LockSelectedSeats();
-
-                            // Tự động cập nhật dữ liệu xuống file input5.txt ngay khi đặt vé thành công
                             GhiDuLieuVaoInput5TrucTiep();
-
                             MessageBox.Show(msg, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         });
                     }
@@ -183,99 +162,6 @@ namespace LAB03
             catch { }
         }
 
-        // Tự động ghi và cộng dồn dữ liệu vé vào file input5.txt chuẩn 5 dòng
-        private void GhiDuLieuVaoInput5TrucTiep()
-        {
-            try
-            {
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "input5.txt");
-
-                List<string> gheDaChon = new List<string>();
-                foreach (Control ctrl in panelGhe.Controls)
-                {
-                    if (ctrl is Button btn && btn.BackColor == Color.Green)
-                        gheDaChon.Add(btn.Text.Trim());
-                }
-                int soVeMoi = gheDaChon.Count > 0 ? gheDaChon.Count : 1;
-
-                string phongChieu = cbPhongChieu.SelectedItem?.ToString() ?? "Phòng chiếu 1";
-
-                // Đọc dữ liệu cũ từ input5.txt để cộng dồn
-                Dictionary<string, int> duLieuCu = new Dictionary<string, int>();
-                if (File.Exists(path))
-                {
-                    string[] lines = File.ReadAllLines(path);
-                    for (int i = 0; i + 4 < lines.Length; i += 5)
-                    {
-                        string key = $"{lines[i].Trim()}_{lines[i + 2].Trim()}";
-                        if (int.TryParse(lines[i + 4].Trim(), out int daBan))
-                        {
-                            duLieuCu[key] = daBan;
-                        }
-                    }
-                }
-
-                string currentKey = $"{tenPhim}_{phongChieu}";
-                if (duLieuCu.ContainsKey(currentKey))
-                {
-                    duLieuCu[currentKey] += soVeMoi;
-                }
-                else
-                {
-                    duLieuCu[currentKey] = soVeMoi;
-                }
-
-                // Danh sách toàn bộ các phim chuẩn trong hệ thống
-                var danhSachPhimChuan = new List<Tuple<string, decimal, string, int>>
-                {
-                    Tuple.Create("Đào, phở và piano", 45000m, "Phòng chiếu 1", 15),
-                    Tuple.Create("Đào, phở và piano", 45000m, "Phòng chiếu 2", 15),
-                    Tuple.Create("Đào, phở và piano", 45000m, "Phòng chiếu 3", 15),
-                    Tuple.Create("Mai", 100000m, "Phòng chiếu 2", 15),
-                    Tuple.Create("Mai", 100000m, "Phòng chiếu 3", 15),
-                    Tuple.Create("Gặp lại chị bầu", 70000m, "Phòng chiếu 1", 15),
-                    Tuple.Create("Tarot", 90000m, "Phòng chiếu 3", 15)
-                };
-
-                // Ghi đè lại file input5.txt theo đúng chuẩn 5 dòng
-                using (StreamWriter writer = new StreamWriter(path, false, new UTF8Encoding(false)))
-                {
-                    foreach (var phim in danhSachPhimChuan)
-                    {
-                        string key = $"{phim.Item1}_{phim.Item3}";
-                        int soVeBan = duLieuCu.ContainsKey(key) ? duLieuCu[key] : 0;
-
-                        writer.WriteLine(phim.Item1);       // Dòng 1: Tên phim
-                        writer.WriteLine(phim.Item2);       // Dòng 2: Giá vé chuẩn
-                        writer.WriteLine(phim.Item3);       // Dòng 3: Phòng chiếu
-                        writer.WriteLine(phim.Item4);       // Dòng 4: Tổng số vé
-                        writer.WriteLine(soVeBan);          // Dòng 5: Số vé đã bán
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Lỗi ghi file input5: " + ex.Message);
-            }
-        }
-
-        // Sau khi đặt thành công: khóa các ghế mình vừa chọn
-        private void LockSelectedSeats()
-        {
-            foreach (Control ctrl in panelGhe.Controls)
-            {
-                if (ctrl is Button btn && btn.BackColor == Color.Green)
-                {
-                    btn.BackColor = Color.Red;
-                    btn.ForeColor = Color.White;
-                    btn.Enabled = false;
-                }
-            }
-            tongTien = 0;
-            lblTinhTien.ForeColor = Color.White;
-            lblTinhTien.Text = "Tổng tiền: 0 VNĐ";
-        }
-
         private void ApplyBookedSeatsToUI(string seatsStr)
         {
             HashSet<string> bookedSeats = new HashSet<string>(
@@ -289,7 +175,7 @@ namespace LAB03
                     string seatName = btn.Text.Trim();
                     if (bookedSeats.Contains(seatName))
                     {
-                        if (btn.BackColor == Color.Green) conflict = true; // Ghế đang chọn bị người khác đặt trước
+                        if (btn.BackColor == Color.Green) conflict = true;
                         btn.BackColor = Color.Red;
                         btn.ForeColor = Color.White;
                         btn.Enabled = false;
@@ -335,8 +221,6 @@ namespace LAB03
 
         private void Ghe_Click(object sender, EventArgs e)
         {
-            lblTinhTien.ForeColor = Color.White;
-
             Button btnGhe = sender as Button;
             if (btnGhe == null || !btnGhe.Enabled) return;
 
@@ -357,13 +241,11 @@ namespace LAB03
         private void TinhTongTien()
         {
             tongTien = 0;
-
             foreach (Control ctrl in panelGhe.Controls)
             {
                 if (ctrl is Button btn && btn.BackColor == Color.Green)
                 {
                     string tenGhe = btn.Text.Trim();
-
                     if (tenGhe == "A1" || tenGhe == "A5" || tenGhe == "C1" || tenGhe == "C5")
                         tongTien += giaVeChuan * 0.25m;
                     else if (tenGhe == "B2" || tenGhe == "B3" || tenGhe == "B4")
@@ -372,7 +254,6 @@ namespace LAB03
                         tongTien += giaVeChuan * 1.0m;
                 }
             }
-
             lblTinhTien.ForeColor = Color.White;
             lblTinhTien.Text = $"Tổng tiền: {tongTien:N0} VNĐ";
         }
@@ -399,8 +280,7 @@ namespace LAB03
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi giao tiếp với Server: " + ex.Message, "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi giao tiếp với Server: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -416,13 +296,91 @@ namespace LAB03
 
             rtbHoaDon.Visible = true;
             rtbHoaDon.Clear();
-            rtbHoaDon.AppendText("       HÓA ĐƠN ĐẶT VÉ XEM PHIM        \n");
+            rtbHoaDon.AppendText("        HÓA ĐƠN ĐẶT VÉ XEM PHIM        \n");
             rtbHoaDon.AppendText($" - Khách hàng : {tenKhachHang}\n");
             rtbHoaDon.AppendText($" - Tên phim   : {tenPhim}\n");
             rtbHoaDon.AppendText($" - Phòng chiếu: {phongChieu}\n");
             rtbHoaDon.AppendText($" - Ghế đã chọn: {danhSachGhe}\n");
             rtbHoaDon.AppendText($" - Tổng tiền  : {tongTien:N0} VNĐ\n");
             rtbHoaDon.AppendText("   Cảm ơn quý khách và chúc xem phim vui vẻ!   ");
+        }
+
+        private void LockSelectedSeats()
+        {
+            foreach (Control ctrl in panelGhe.Controls)
+            {
+                if (ctrl is Button btn && btn.BackColor == Color.Green)
+                {
+                    btn.BackColor = Color.Red;
+                    btn.ForeColor = Color.White;
+                    btn.Enabled = false;
+                }
+            }
+            tongTien = 0;
+            lblTinhTien.ForeColor = Color.White;
+            lblTinhTien.Text = "Tổng tiền: 0 VNĐ";
+        }
+
+        private void GhiDuLieuVaoInput5TrucTiep()
+        {
+            try
+            {
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "input5.txt");
+                List<string> gheDaChon = new List<string>();
+                foreach (Control ctrl in panelGhe.Controls)
+                {
+                    if (ctrl is Button btn && btn.BackColor == Color.Green)
+                        gheDaChon.Add(btn.Text.Trim());
+                }
+                int soVeMoi = gheDaChon.Count > 0 ? gheDaChon.Count : 1;
+                string phongChieu = cbPhongChieu.SelectedItem?.ToString() ?? "Phòng chiếu 1";
+
+                Dictionary<string, int> duLieuCu = new Dictionary<string, int>();
+                if (File.Exists(path))
+                {
+                    string[] lines = File.ReadAllLines(path);
+                    for (int i = 0; i + 4 < lines.Length; i += 5)
+                    {
+                        string key = $"{lines[i].Trim()}_{lines[i + 2].Trim()}";
+                        if (int.TryParse(lines[i + 4].Trim(), out int daBan))
+                        {
+                            duLieuCu[key] = daBan;
+                        }
+                    }
+                }
+
+                string currentKey = $"{tenPhim}_{phongChieu}";
+                if (duLieuCu.ContainsKey(currentKey))
+                    duLieuCu[currentKey] += soVeMoi;
+                else
+                    duLieuCu[currentKey] = soVeMoi;
+
+                var danhSachPhimChuan = new List<Tuple<string, decimal, string, int>>
+                {
+                    Tuple.Create("Đào, phở và piano", 45000m, "Phòng chiếu 1", 15),
+                    Tuple.Create("Đào, phở và piano", 45000m, "Phòng chiếu 2", 15),
+                    Tuple.Create("Đào, phở và piano", 45000m, "Phòng chiếu 3", 15),
+                    Tuple.Create("Mai", 100000m, "Phòng chiếu 2", 15),
+                    Tuple.Create("Mai", 100000m, "Phòng chiếu 3", 15),
+                    Tuple.Create("Gặp lại chị bầu", 70000m, "Phòng chiếu 1", 15),
+                    Tuple.Create("Tarot", 90000m, "Phòng chiếu 3", 15)
+                };
+
+                using (StreamWriter writer = new StreamWriter(path, false, new UTF8Encoding(false)))
+                {
+                    foreach (var phim in danhSachPhimChuan)
+                    {
+                        string key = $"{phim.Item1}_{phim.Item3}";
+                        int soVeBan = duLieuCu.ContainsKey(key) ? duLieuCu[key] : 0;
+                        writer.WriteLine(phim.Item1);
+                        writer.WriteLine(phim.Item2);
+                        writer.WriteLine(phim.Item3);
+                        writer.WriteLine(phim.Item4);
+                        writer.WriteLine(soVeBan);
+                    }
+                }
+            }
+            catch { }
         }
 
         private void btnHuy_Click(object sender, EventArgs e)
@@ -448,10 +406,14 @@ namespace LAB03
         }
 
         private void btnThoat_Click(object sender, EventArgs e) => this.Close();
-
         private void btnMinimize_Click(object sender, EventArgs e) => this.WindowState = FormWindowState.Minimized;
         private void btnMaximize_Click(object sender, EventArgs e) => this.WindowState = (this.WindowState == FormWindowState.Maximized) ? FormWindowState.Normal : FormWindowState.Maximized;
         private void btnClose_Click(object sender, EventArgs e) => this.Close();
+
+        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
+        private static extern void ReleaseCapture();
+        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
+        private static extern void SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         private void pictureBox2_MouseDown(object sender, MouseEventArgs e)
         {
@@ -461,11 +423,5 @@ namespace LAB03
                 SendMessage(this.Handle, 0x112, 0xf012, 0);
             }
         }
-
-        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private static extern void ReleaseCapture();
-
-        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private static extern void SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
     }
 }
