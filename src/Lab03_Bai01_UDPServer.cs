@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -16,47 +17,91 @@ namespace LAB03
         public Lab03_Bai01_UDPServer()
         {
             InitializeComponent();
+
+            // Cấu hình ListView hiển thị thông điệp
+            lstReceivedMessages.View = View.Details;
+            lstReceivedMessages.FullRowSelect = true;
+            lstReceivedMessages.GridLines = false;
+            lstReceivedMessages.MultiSelect = false;
+            lstReceivedMessages.HeaderStyle = ColumnHeaderStyle.None;
+
+            lstReceivedMessages.Columns.Clear();
+            lstReceivedMessages.Columns.Add(
+                "Messages",
+                Math.Max(100, lstReceivedMessages.ClientSize.Width - 5)
+            );
+
+            // Cập nhật độ rộng cột khi thay đổi kích thước
+            lstReceivedMessages.Resize += (s, e) =>
+            {
+                if (lstReceivedMessages.Columns.Count > 0)
+                {
+                    lstReceivedMessages.Columns[0].Width =
+                        Math.Max(100, lstReceivedMessages.ClientSize.Width - 5);
+                }
+            };
         }
 
-        // Nút Listen
+        // 1. Nút Listen
         private async void btnListen_Click(object sender, EventArgs e)
         {
+            // Kiểm tra Server đã chạy chưa
             if (udpServer != null)
             {
-                MessageBox.Show("Server đang lắng nghe!");
+                MessageBox.Show(
+                    "Server đang lắng nghe!",
+                    "Thông báo",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
                 return;
             }
 
+            // Kiểm tra Port
             if (!int.TryParse(tbxServerPort.Text.Trim(), out int port)
                 || port < 1 || port > 65535)
             {
-                MessageBox.Show("Vui lòng nhập Port hợp lệ (1-65535)!");
+                MessageBox.Show(
+                    "Vui lòng nhập Port hợp lệ (1-65535)!",
+                    "Cảnh báo",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
                 return;
             }
 
             try
             {
+                // Khởi tạo UDP Server
                 udpServer = new UdpClient(port);
                 cancellationTokenSource = new CancellationTokenSource();
 
                 btnListen.Enabled = false;
                 tbxServerPort.Enabled = false;
 
-                AppendMessage($"Server đang lắng nghe tại Port {port}...\r\n");
+                AppendMessage(
+                    $"[{DateTime.Now:HH:mm:ss}] SERVER: Đang lắng nghe tại Port {port}"
+                );
 
+                // Bắt đầu nhận dữ liệu
                 await ReceiveMessagesAsync(cancellationTokenSource.Token);
             }
             catch (SocketException ex)
             {
+                AppendMessage(
+                    $"[{DateTime.Now:HH:mm:ss}] LỖI SERVER: {ex.Message}"
+                );
+
                 MessageBox.Show(
-                    "Không thể khởi động Server: " + ex.Message,
+                    "Không thể khởi động Server!\n" + ex.Message,
                     "Lỗi UDP Server",
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                    MessageBoxIcon.Error
+                );
             }
             catch (ObjectDisposedException)
             {
-                // Socket đã được đóng khi người dùng thoát.
+                // Socket đã được đóng
             }
             finally
             {
@@ -74,22 +119,37 @@ namespace LAB03
             }
         }
 
-        // Nhận dữ liệu từ Client
+        // 2. Nhận dữ liệu liên tục từ Client
         private async Task ReceiveMessagesAsync(
             CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                UdpReceiveResult result;
+                UdpClient? server = udpServer;
+
+                if (server == null)
+                    break;
 
                 try
                 {
-                    UdpClient? server = udpServer;
+                    // Chờ nhận một gói tin UDP
+                    UdpReceiveResult result =
+                        await server.ReceiveAsync(cancellationToken);
 
-                    if (server == null)
-                        break;
+                    // Giải mã dữ liệu UTF-8
+                    string message =
+                        Encoding.UTF8.GetString(result.Buffer);
 
-                    result = await server.ReceiveAsync(cancellationToken);
+                    string remoteIP =
+                        result.RemoteEndPoint.Address.ToString();
+
+                    int remotePort =
+                        result.RemoteEndPoint.Port;
+
+                    // Hiển thị thông điệp
+                    AppendMessage(
+                        $"[{DateTime.Now:HH:mm:ss}] {remoteIP}:{remotePort} - {message}"
+                    );
                 }
                 catch (OperationCanceledException)
                 {
@@ -99,87 +159,76 @@ namespace LAB03
                 {
                     break;
                 }
-                catch (SocketException)
+                catch (SocketException ex)
                 {
                     if (cancellationToken.IsCancellationRequested)
                         break;
 
-                    throw;
+                    AppendMessage(
+                        $"[{DateTime.Now:HH:mm:ss}] LỖI NHẬN DỮ LIỆU: {ex.Message}"
+                    );
+                    break;
                 }
-
-                string message = Encoding.UTF8.GetString(result.Buffer);
-
-                string remoteIP = result.RemoteEndPoint.Address.ToString();
-                int remotePort = result.RemoteEndPoint.Port;
-
-                AppendMessage(
-                    $"[{DateTime.Now:HH:mm:ss}] " +
-                    $"{remoteIP}:{remotePort}\r\n" +
-                    $"{message}\r\n\r\n");
             }
         }
 
-        // Cập nhật giao diện an toàn giữa các luồng
+        // 3. Hiển thị thông điệp lên ListView
         private void AppendMessage(string message)
-{
-    // Kiểm tra xem Form đã bị hủy hay Handle chưa được tạo / đang đóng chưa
-    if (IsDisposed || !IsHandleCreated)
-        return;
-
-    if (InvokeRequired)
-    {
-        try
         {
-            // Dùng Invoke hoặc BeginInvoke nhưng bọc try-catch bên trong delegate
-            BeginInvoke(new Action(() =>
+            if (IsDisposed || !IsHandleCreated)
+                return;
+
+            if (InvokeRequired)
             {
                 try
                 {
-                    if (!IsDisposed && IsHandleCreated)
-                    {
-                        lstReceivedMessages.Items.Add(message);
-
-                        // Tự động cuộn xuống mục mới nhất trong ListView
-                        int lastIndex = lstReceivedMessages.Items.Count - 1;
-                        if (lastIndex >= 0)
-                        {
-                            lstReceivedMessages.EnsureVisible(lastIndex);
-                        }
-                    }
-                }
-                catch (ObjectDisposedException)
-                {
-                    // Form đã đóng trong lúc chờ thực thi lệnh
+                    BeginInvoke(new Action<string>(AppendMessage), message);
                 }
                 catch (InvalidOperationException)
                 {
-                    // Handle đã bị hủy
+                    // Form đang đóng
                 }
-            }));
-        }
-        catch (InvalidOperationException)
-        {
-            // Bắt lỗi nếu gọi BeginInvoke vào thời điểm Handle đang bị hủy
-        }
-    }
-    else
-    {
-        if (!IsDisposed && IsHandleCreated)
-        {
-            lstReceivedMessages.Items.Add(message);
-        }
-    }
-}
 
-        // Nút Thoát
+                return;
+            }
+
+            if (IsDisposed || lstReceivedMessages.IsDisposed)
+                return;
+
+            // Đảm bảo mỗi thông điệp nằm trên một dòng
+            message = message
+                .Replace("\r", " ")
+                .Replace("\n", " ");
+
+            ListViewItem item = new ListViewItem(message);
+
+            lstReceivedMessages.BeginUpdate();
+
+            try
+            {
+                lstReceivedMessages.Items.Add(item);
+
+                // Tự động cuộn đến thông điệp mới nhất
+                lstReceivedMessages.EnsureVisible(
+                    lstReceivedMessages.Items.Count - 1
+                );
+            }
+            finally
+            {
+                lstReceivedMessages.EndUpdate();
+            }
+        }
+
+        // 4. Nút Thoát
         private void btnServerExit_Click(object sender, EventArgs e)
         {
             cancellationTokenSource?.Cancel();
             udpServer?.Dispose();
+
             Close();
         }
 
-        // Đóng Server khi đóng Form
+        // 5. Đóng Server khi đóng Form
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             cancellationTokenSource?.Cancel();

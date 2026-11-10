@@ -93,11 +93,13 @@
             // 
             // lstReceivedMessages
             // 
+            lstReceivedMessages.FullRowSelect = true;
             lstReceivedMessages.Location = new Point(78, 138);
             lstReceivedMessages.Name = "lstReceivedMessages";
             lstReceivedMessages.Size = new Size(306, 296);
             lstReceivedMessages.TabIndex = 11;
             lstReceivedMessages.UseCompatibleStateImageBehavior = false;
+            lstReceivedMessages.View = View.Details;
             // 
             // Lab03_Bai01_UDPServer
             // 

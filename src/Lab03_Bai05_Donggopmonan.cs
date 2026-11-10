@@ -273,24 +273,14 @@ namespace LAB03
         // TẢI DANH SÁCH MÓN ĂN ĐÓNG GÓP
         // ==========================================
 
+
         private async Task LoadDanhSachAsync()
         {
             try
             {
-<<<<<<< HEAD
-                // Tạo yêu cầu lấy danh sách
+                // Tạo yêu cầu lấy danh sách đóng góp
                 Lab03_Bai05_packet packet =
                     new Lab03_Bai05_packet
-=======
-                Lab03_Bai05_packet p = new Lab03_Bai05_packet { Action = "GET_ALL_DETAILS" };
-                string jsonRequest = JsonSerializer.Serialize(p);
-                byte[] requestData = Encoding.UTF8.GetBytes(jsonRequest);
-                Lab03_Bai05_packet response = null;
-
-                await Task.Run(() =>
-                {
-                    using (TcpClient client = new TcpClient("10.139.209.54", 8888))
->>>>>>> 36f0b2fd08977ab14e54f9b77a2d3f31b84e7892
                     {
                         Action = "GET_ALL_DETAILS"
                     };
@@ -300,6 +290,11 @@ namespace LAB03
                     await SendPacketAsync(packet);
 
                 // Kiểm tra phản hồi
+                if (response.Action == "ERROR")
+                {
+                    throw new Exception(response.TenMonAn);
+                }
+
                 if (response.Action != "DETAILS_RESULT")
                 {
                     throw new Exception(
@@ -307,13 +302,14 @@ namespace LAB03
                     );
                 }
 
+                // Nếu danh sách rỗng
                 if (string.IsNullOrWhiteSpace(response.TenMonAn))
                 {
                     listView1.Items.Clear();
                     return;
                 }
 
-                // Phân tích JSON danh sách
+                // Phân tích JSON
                 using (JsonDocument doc =
                     JsonDocument.Parse(response.TenMonAn))
                 {
@@ -332,6 +328,7 @@ namespace LAB03
                     foreach (JsonElement element in root.EnumerateArray())
                     {
                         string stt = GetJsonValue(element, "STT");
+
                         string nguoi = GetJsonValue(
                             element, "NguoiDongGop");
 
@@ -351,7 +348,7 @@ namespace LAB03
                         danhSach.Add(item);
                     }
 
-                    // Cập nhật giao diện
+                    // Cập nhật ListView
                     listView1.BeginUpdate();
 
                     try
@@ -390,6 +387,7 @@ namespace LAB03
                 );
             }
         }
+
 
         // ==========================================
         // HÀM ĐỌC GIÁ TRỊ TỪ JSON
