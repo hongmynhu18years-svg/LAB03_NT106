@@ -8,7 +8,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Forms;
-using System.Threading.Tasks; // Bắt buộc thêm để dùng Task.Run
+using System.Threading.Tasks;
 
 namespace LAB03
 {
@@ -34,7 +34,6 @@ namespace LAB03
             }
         }
 
-        // 1. CHUYỂN NÚT GỬI SANG ASYNC
         private async void send_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txt_TenNguoiDongGop.Text) || string.IsNullOrWhiteSpace(txt_TenMonAnDongGop.Text))
@@ -43,8 +42,9 @@ namespace LAB03
                 return;
             }
 
-            // Tạm khóa nút để tránh spam click
-            if (sender is Button btn) btn.Enabled = false;
+            // Lưu lại button gửi để mở khóa ở khối finally
+            Button btnSend = sender as Button;
+            if (btnSend != null) btnSend.Enabled = false;
 
             try
             {
@@ -67,15 +67,14 @@ namespace LAB03
                 byte[] data = Encoding.UTF8.GetBytes(json);
                 Lab03_Bai05_packet response = null;
 
-                // ĐẨY LỆNH GỬI/NHẬN MẠNG XUỐNG BACKGROUND THREAD
+                // Gửi lệnh ngầm xuống background thread
                 await Task.Run(() =>
                 {
-                    using (TcpClient client = new TcpClient("127.0.0.1", 8888))
+                    using (TcpClient client = new TcpClient("10.139.209.54", 8888))
                     {
                         NetworkStream stream = client.GetStream();
                         stream.Write(data, 0, data.Length);
 
-                        // Chờ nhận phản hồi từ Server xem có lỗi trùng món không
                         byte[] buffer = new byte[1024 * 5000];
                         int bytesRead = stream.Read(buffer, 0, buffer.Length);
                         if (bytesRead > 0)
@@ -86,11 +85,10 @@ namespace LAB03
                     }
                 });
 
-                // XỬ LÝ GIAO DIỆN SAU KHI SERVER PHẢN HỒI
                 if (response != null && response.Action == "ERROR")
                 {
                     MessageBox.Show(response.TenMonAn, "Từ chối", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    return; // Dừng lại, không xóa trắng form
+                    return;
                 }
 
                 MessageBox.Show("Đã gửi đóng góp tới Server thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -99,7 +97,6 @@ namespace LAB03
                 txt_TenMonAnDongGop.Clear();
                 duongDanAnhGoc = "";
 
-                // Gọi hàm load danh sách bất đồng bộ
                 await LoadDanhSachAsync();
             }
             catch (Exception ex)
@@ -108,11 +105,11 @@ namespace LAB03
             }
             finally
             {
-                if (sender is Button send) send.Enabled = true;
+                // Sửa lỗi cú pháp biến mở khóa nút bấm
+                if (btnSend != null) btnSend.Enabled = true;
             }
         }
 
-        // 2. CHUYỂN ĐỔI HÀM LẤY DANH SÁCH SANG DẠNG BẤT ĐỒNG BỘ (ASYNC TASK)
         private async Task LoadDanhSachAsync()
         {
             listView1.Items.Clear();
@@ -125,7 +122,6 @@ namespace LAB03
                 byte[] requestData = Encoding.UTF8.GetBytes(jsonRequest);
                 Lab03_Bai05_packet response = null;
 
-                // CHẠY NGẦM ĐỂ KHÔNG TREO FORM
                 await Task.Run(() =>
                 {
                     using (TcpClient client = new TcpClient("127.0.0.1", 8888))
@@ -146,7 +142,6 @@ namespace LAB03
                     }
                 });
 
-                // CẬP NHẬT LISTVIEW TRÊN LUỒNG CHÍNH
                 if (response != null && response.Action == "DETAILS_RESULT" && !string.IsNullOrEmpty(response.TenMonAn))
                 {
                     using (JsonDocument doc = JsonDocument.Parse(response.TenMonAn))
@@ -171,13 +166,14 @@ namespace LAB03
             }
             catch
             {
-                // Bỏ qua lỗi ngầm để tránh spam MessageBox nếu mạng chập chờn
+                // Bỏ qua lỗi ngầm
             }
         }
 
-        // 3. CÁC SỰ KIỆN GỌI HÀM LOAD CŨNG PHẢI DÙNG ASYNC
-        private async void bang_danh_gia_SelectedIndexChanged(object sender, EventArgs e)
+        // Sự kiện chuyển Tab trên giao diện TabControl
+        private async void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // Kiểm tra nếu đang ở tab danh sách/đánh giá (index 1 tùy theo thiết kế giao diện của bạn)
             if (tabControl1.SelectedIndex == 1)
             {
                 await LoadDanhSachAsync();
@@ -189,7 +185,6 @@ namespace LAB03
             await LoadDanhSachAsync();
         }
 
-        // Các sự kiện rỗng giữ nguyên
         private void xem_danh_gia_Click(object sender, EventArgs e) { }
         private void tabPage1_Click(object sender, EventArgs e) { }
         private void TenNguoiDongGop_Click(object sender, EventArgs e) { }

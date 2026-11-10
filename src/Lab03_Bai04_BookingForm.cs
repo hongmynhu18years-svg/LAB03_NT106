@@ -98,7 +98,7 @@ namespace LAB03
             {
                 try
                 {
-                    tcpClient = new TcpClient("127.0.0.1", 8080);
+                    tcpClient = new TcpClient("10.139.209.54", 8080);
                     NetworkStream stream = tcpClient.GetStream();
                     UTF8Encoding utf8 = new UTF8Encoding(false);
                     reader = new StreamReader(stream, utf8);
