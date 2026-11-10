@@ -13,7 +13,6 @@ namespace LAB03
 {
     public partial class Lab03_Bai04 : Form
     {
-        // Đã sửa tên constructor từ Bai05() thành Lab03_Bai04() cho khớp với tên Class
         public Lab03_Bai04()
         {
             InitializeComponent();
@@ -30,29 +29,35 @@ namespace LAB03
         {
             txtCustomerName.Focus();
 
-            if (pictureBox1 != null)
+            try
             {
-                Image gifImg1 = Image.FromFile("Resources/cinema.gif"); pictureBox1.Image = gifImg1;
-                pictureBox1.SendToBack();
-
-                if (gifImg1 != null && gifImg1.FrameDimensionsList.Length > 0)
+                if (pictureBox1 != null && System.IO.File.Exists("Resources/cinema.gif"))
                 {
-                    dimensionBai05_1 = new FrameDimension(gifImg1.FrameDimensionsList[0]);
-                    frameCountBai05_1 = gifImg1.GetFrameCount(dimensionBai05_1);
+                    Image gifImg1 = Image.FromFile("Resources/cinema.gif");
+                    pictureBox1.Image = gifImg1;
+                    pictureBox1.SendToBack();
+
+                    if (gifImg1 != null && gifImg1.FrameDimensionsList.Length > 0)
+                    {
+                        dimensionBai05_1 = new FrameDimension(gifImg1.FrameDimensionsList[0]);
+                        frameCountBai05_1 = gifImg1.GetFrameCount(dimensionBai05_1);
+                    }
+                }
+
+                if (pictureBoxMouseDown != null && System.IO.File.Exists("Resources/Gemini_Generated_Gif_j8cnlfj8cnlfj8cn.gif"))
+                {
+                    Image gifImg2 = Image.FromFile("Resources/Gemini_Generated_Gif_j8cnlfj8cnlfj8cn.gif");
+                    pictureBoxMouseDown.Image = gifImg2;
+                    pictureBoxMouseDown.SendToBack();
+
+                    if (gifImg2 != null && gifImg2.FrameDimensionsList.Length > 0)
+                    {
+                        dimensionBai05_2 = new FrameDimension(gifImg2.FrameDimensionsList[0]);
+                        frameCountBai05_2 = gifImg2.GetFrameCount(dimensionBai05_2);
+                    }
                 }
             }
-
-            if (pictureBoxMouseDown != null)
-            {
-                Image gifImg2 = Image.FromFile("Resources/Gemini_Generated_Gif_j8cnlfj8cnlfj8cn.gif"); pictureBoxMouseDown.Image = gifImg2;
-                pictureBoxMouseDown.SendToBack();
-
-                if (gifImg2 != null && gifImg2.FrameDimensionsList.Length > 0)
-                {
-                    dimensionBai05_2 = new FrameDimension(gifImg2.FrameDimensionsList[0]);
-                    frameCountBai05_2 = gifImg2.GetFrameCount(dimensionBai05_2);
-                }
-            }
+            catch { }
         }
 
         private void Bai05_Shown(object sender, EventArgs e)
@@ -80,51 +85,6 @@ namespace LAB03
             timerBai05Gif.Start();
         }
 
-        private void btnMinimize_Click(object sender, EventArgs e)
-        {
-            this.WindowState = FormWindowState.Minimized;
-        }
-
-        private void btnMaximize_Click(object sender, EventArgs e)
-        {
-            if (this.WindowState == FormWindowState.Maximized)
-            {
-                this.WindowState = FormWindowState.Normal;
-            }
-            else
-            {
-                this.WindowState = FormWindowState.Maximized;
-            }
-        }
-
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private static extern void ReleaseCapture();
-
-        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private static extern void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
-
-        private void pictureBoxMouseDown_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                ReleaseCapture();
-                SendMessage(this.Handle, 0x112, 0xf012, 0);
-            }
-        }
-
-        private string selectedMovie = "";
-        private decimal selectedPrice = 0;
-
-        private void txtCustomerName_Click(object sender, EventArgs e)
-        {
-            lblThongBao.Text = "";
-        }
-
         private void KiemTraVaMoBooking(string tenPhim, decimal giaChuan)
         {
             string tenKhach = txtCustomerName.Text.Trim();
@@ -137,79 +97,34 @@ namespace LAB03
             }
             lblThongBao.Text = "";
 
+            this.Hide();
             Lab03_Bai04_BookingForm bookingForm = new Lab03_Bai04_BookingForm(tenPhim, giaChuan, tenKhach);
             bookingForm.ShowDialog();
-        }
-
-        private void btnDaoPhoPiano_Click(object sender, EventArgs e)
-        {
-            string tenKhach = txtCustomerName.Text.Trim();
-            if (string.IsNullOrWhiteSpace(tenKhach))
-            {
-                lblThongBao.Text = "Vui lòng nhập tên khách hàng trước khi chọn phim!";
-                txtCustomerName.Focus();
-                return;
-            }
-            this.Hide();
-            lblThongBao.Text = "";
-
-            Lab03_Bai04_BookingForm bookingForm = new Lab03_Bai04_BookingForm("Đào, phở và piano", 45000m, tenKhach);
-            bookingForm.ShowDialog();
             this.Show();
         }
 
-        private void btnMai_Click(object sender, EventArgs e)
+        private void btnDaoPhoPiano_Click(object sender, EventArgs e) => KiemTraVaMoBooking("Đào, phở và piano", 45000m);
+        private void btnMai_Click(object sender, EventArgs e) => KiemTraVaMoBooking("Mai", 100000m);
+        private void btnGapLaiChiBau_Click(object sender, EventArgs e) => KiemTraVaMoBooking("Gặp lại chị bầu", 70000m);
+        private void btnTarot_Click(object sender, EventArgs e) => KiemTraVaMoBooking("Tarot", 90000m);
+
+        private void txtCustomerName_TextChanged(object sender, EventArgs e) => lblThongBao.Text = "";
+        private void btnMinimize_Click(object sender, EventArgs e) => this.WindowState = FormWindowState.Minimized;
+        private void btnMaximize_Click(object sender, EventArgs e) => this.WindowState = (this.WindowState == FormWindowState.Maximized) ? FormWindowState.Normal : FormWindowState.Maximized;
+        private void btnClose_Click(object sender, EventArgs e) => this.Close();
+
+        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
+        private static extern void ReleaseCapture();
+        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
+        private static extern void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+
+        private void pictureBoxMouseDown_MouseDown(object sender, MouseEventArgs e)
         {
-            string tenKhach = txtCustomerName.Text.Trim();
-            if (string.IsNullOrWhiteSpace(tenKhach))
+            if (e.Button == MouseButtons.Left)
             {
-                lblThongBao.Text = "Vui lòng nhập tên khách hàng trước khi chọn phim!";
-                txtCustomerName.Focus();
-                return;
+                ReleaseCapture();
+                SendMessage(this.Handle, 0x112, 0xf012, 0);
             }
-            this.Hide();
-            lblThongBao.Text = "";
-
-            Lab03_Bai04_BookingForm bookingForm = new Lab03_Bai04_BookingForm("Mai", 100000m, tenKhach);
-            bookingForm.ShowDialog();
-            this.Show();
-        }
-
-        private void btnGapLaiChiBau_Click(object sender, EventArgs e)
-        {
-            string tenKhach = txtCustomerName.Text.Trim();
-            if (string.IsNullOrWhiteSpace(tenKhach))
-            {
-                lblThongBao.Text = "Vui lòng nhập tên khách hàng trước khi chọn phim!";
-                txtCustomerName.Focus();
-                return;
-            }
-            this.Hide();
-            lblThongBao.Text = "";
-            Lab03_Bai04_BookingForm bookingForm = new Lab03_Bai04_BookingForm("Gặp lại chị bầu", 70000m, tenKhach);
-            bookingForm.ShowDialog();
-            this.Show();
-        }
-
-        private void btnTarot_Click(object sender, EventArgs e)
-        {
-            string tenKhach = txtCustomerName.Text.Trim();
-            if (string.IsNullOrWhiteSpace(tenKhach))
-            {
-                lblThongBao.Text = "Vui lòng nhập tên khách hàng trước khi chọn phim!";
-                txtCustomerName.Focus();
-                return;
-            }
-            this.Hide();
-            lblThongBao.Text = "";
-            Lab03_Bai04_BookingForm bookingForm = new Lab03_Bai04_BookingForm("Tarot", 90000m, tenKhach);
-            bookingForm.ShowDialog();
-            this.Show();
-        }
-
-        private void txtCustomerName_TextChanged(object sender, EventArgs e)
-        {
-            lblThongBao.Text = "";
         }
 
         private void lnkAdmin_LinkClicked_Click(object sender, EventArgs e)
