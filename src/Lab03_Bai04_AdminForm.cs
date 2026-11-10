@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -115,7 +117,7 @@ namespace LAB03
             }
         }
 
-        // Hệ số giá ghế giống form đặt vé
+        // Hệ số giá ghế
         private static decimal HeSoGhe(string tenGhe)
         {
             if (tenGhe == "A1" || tenGhe == "A5" || tenGhe == "C1" || tenGhe == "C5") return 0.25m;
@@ -123,7 +125,7 @@ namespace LAB03
             return 1.0m;
         }
 
-        // Giá vé chuẩn từng phim đọc từ input5.txt (nếu có)
+        // Đọc bảng giá chuẩn từ input5.txt
         private static Dictionary<string, decimal> DocBangGia()
         {
             var bangGia = new Dictionary<string, decimal>();
@@ -139,30 +141,6 @@ namespace LAB03
             return bangGia;
         }
 
-        // Lấy toàn bộ dữ liệu ghế từ Server qua TCP
-        private static string LayDuLieuTuServer()
-        {
-            using (TcpClient client = new TcpClient())
-            {
-                client.Connect("127.0.0.1", 8080);
-                client.ReceiveTimeout = 3000;
-                UTF8Encoding utf8 = new UTF8Encoding(false);
-                NetworkStream stream = client.GetStream();
-                StreamReader reader = new StreamReader(stream, utf8);
-                StreamWriter writer = new StreamWriter(stream, utf8) { AutoFlush = true };
-
-                writer.WriteLine("GET_ALL");
-
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    if (line.StartsWith("ALL_DATA|"))
-                        return line.Substring("ALL_DATA|".Length);
-                }
-                return "";
-            }
-        }
-
         private async void btnXuatThongKe_Click(object sender, EventArgs e)
         {
             if (progressBar1 != null)
@@ -173,56 +151,73 @@ namespace LAB03
                 progressBar1.Value = 10;
             }
 
-            string duLieu;
-            try
-            {
-                duLieu = await Task.Run(() => LayDuLieuTuServer());
-            }
-            catch
+            string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "input5.txt");
+            if (!File.Exists(inputPath))
             {
                 if (progressBar1 != null) progressBar1.Value = 0;
-                MessageBox.Show(this, "Không kết nối được Server 8080! Hãy mở Server trước.", "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "Không tìm thấy file 'input5.txt'! Vui lòng thực hiện đặt vé và thanh toán trước ở form Booking để tạo dữ liệu.", "Cảnh báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            if (progressBar1 != null) progressBar1.Value = 50;
+            if (progressBar1 != null) progressBar1.Value = 40;
+
+            await Task.Run(() => Task.Delay(100)); // Giả lập độ trễ mượt cho progress bar
+            string[] lines = File.ReadAllLines(inputPath);
+
+            if (lines == null || lines.Length == 0)
+            {
+                if (progressBar1 != null) progressBar1.Value = 0;
+                MessageBox.Show(this, "File 'input5.txt' đang trống! Chưa có dữ liệu vé nào được ghi.", "Thông báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
             Dictionary<string, decimal> bangGia = DocBangGia();
             List<ThongKePhim> danhSach = new List<ThongKePhim>();
 
-            foreach (string entry in duLieu.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+            // Đọc theo cụm 5 dòng mỗi phim từ file local
+            for (int i = 0; i + 4 < lines.Length; i += 5)
             {
-                int eq = entry.LastIndexOf('=');
-                if (eq < 0) continue;
+                string tenPhim = lines[i].Trim();
+                if (string.IsNullOrEmpty(tenPhim)) continue;
 
-                string movieKey = entry.Substring(0, eq);
-                int sep = movieKey.LastIndexOf('_');
-                if (sep < 0) continue;
+                decimal.TryParse(lines[i + 1].Trim(), out decimal giaVeChuan);
+                string phongChieu = lines[i + 2].Trim();
+                int.TryParse(lines[i + 3].Trim(), out int tongSoVe);
+                int.TryParse(lines[i + 4].Trim(), out int soLuongBan);
 
-                string tenPhim = movieKey.Substring(0, sep);
-                string phongChieu = movieKey.Substring(sep + 1);
-                string[] ghe = entry.Substring(eq + 1).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-                decimal giaChuan = bangGia.ContainsKey(tenPhim) ? bangGia[tenPhim] : GiaMacDinh;
+                decimal giaChuan = bangGia.ContainsKey(tenPhim) ? bangGia[tenPhim] : (giaVeChuan > 0 ? giaVeChuan : GiaMacDinh);
+                int tongVe = tongSoVe > 0 ? tongSoVe : TongSoGhe;
 
                 danhSach.Add(new ThongKePhim
                 {
                     TenPhim = tenPhim,
                     PhongChieu = phongChieu,
                     GiaVeChuan = giaChuan,
-                    TongSoVe = TongSoGhe,
-                    SoLuongVeBan = ghe.Length,
-                    DoanhThu = ghe.Sum(g => HeSoGhe(g.Trim()) * giaChuan)
+                    TongSoVe = tongVe,
+                    SoLuongVeBan = soLuongBan,
+                    DoanhThu = soLuongBan * giaChuan
                 });
             }
+
+            if (danhSach.Count == 0)
+            {
+                if (progressBar1 != null) progressBar1.Value = 0;
+                MessageBox.Show(this, "Không có dữ liệu hợp lệ trong file 'input5.txt' để thống kê!", "Thông báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (progressBar1 != null) progressBar1.Value = 75;
 
             danhSachSapXep = danhSach.OrderByDescending(p => p.DoanhThu).ToList();
             for (int i = 0; i < danhSachSapXep.Count; i++)
                 danhSachSapXep[i].XepHang = i + 1;
 
-            if (progressBar1 != null) progressBar1.Value = 80;
+            if (progressBar1 != null) progressBar1.Value = 90;
 
+            // Thiết lập hiển thị ListView
             lvThongKe.View = View.Details;
             lvThongKe.FullRowSelect = true;
             lvThongKe.GridLines = true;
@@ -255,6 +250,7 @@ namespace LAB03
                 item.SubItems.Add(phim.DoanhThu.ToString("N0"));
                 item.SubItems.Add(phim.XepHang.ToString());
 
+                // Set màu nền và màu chữ tương phản rõ ràng tránh bị tàng hình chữ
                 item.BackColor = isEven ? Color.Black : Color.FromArgb(245, 245, 245);
                 item.ForeColor = isEven ? Color.White : Color.Black;
                 isEven = !isEven;
