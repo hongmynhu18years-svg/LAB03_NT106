@@ -50,7 +50,7 @@ namespace LAB03
         {
             try
             {
-                listener = new TcpListener(IPAddress.Any, port);
+                listener = new TcpListener(IPAddress.Any, 9009);
                 listener.Start();
                 AddMessage("Server started! Waiting for connection...");
 

@@ -185,7 +185,7 @@ namespace LAB03
                 // 2. ĐẨY TÁC VỤ MẠNG XUỐNG LUỒNG NGẦM (Không làm đơ Form)
                 await Task.Run(() =>
                 {
-                    using (TcpClient client = new TcpClient("127.0.0.1", 8888))
+                    using (TcpClient client = new TcpClient("10.139.209.155", 8888))
                     {
                         NetworkStream stream = client.GetStream();
                         stream.Write(requestData, 0, requestData.Length);
@@ -273,7 +273,7 @@ namespace LAB03
 
                 await Task.Run(() =>
                 {
-                    using (TcpClient client = new TcpClient("10.139.209.54", 8888))
+                    using (TcpClient client = new TcpClient("10.139.209.155", 8888))
                     {
                         client.ReceiveTimeout = 3000;
                         client.SendTimeout = 3000;

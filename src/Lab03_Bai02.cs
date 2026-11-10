@@ -36,9 +36,9 @@ namespace LAB03
         {
             try
             {
-                listener = new TcpListener(IPAddress.Any, 8080);
+                listener = new TcpListener(IPAddress.Any, 9008);
                 listener.Start();
-                AddMessage("Telnet running on 127.0.0.1:8080");
+                AddMessage("Telnet running on 127.0.0.1:9008");
 
                 while (isListening)
                 {
