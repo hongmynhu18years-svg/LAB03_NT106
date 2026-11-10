@@ -277,34 +277,19 @@ namespace LAB03
         {
             try
             {
-<<<<<<< HEAD
-                // Tạo yêu cầu lấy danh sách
-                Lab03_Bai05_packet packet =
-                    new Lab03_Bai05_packet
-=======
-                Lab03_Bai05_packet p = new Lab03_Bai05_packet { Action = "GET_ALL_DETAILS" };
-                string jsonRequest = JsonSerializer.Serialize(p);
-                byte[] requestData = Encoding.UTF8.GetBytes(jsonRequest);
-                Lab03_Bai05_packet response = null;
-
-                await Task.Run(() =>
+                // Tạo yêu cầu lấy danh sách (Xóa các dấu <<<<<<<, =======, >>>>>>>)
+                Lab03_Bai05_packet packet = new Lab03_Bai05_packet
                 {
-                    using (TcpClient client = new TcpClient("10.139.209.54", 8888))
->>>>>>> 36f0b2fd08977ab14e54f9b77a2d3f31b84e7892
-                    {
-                        Action = "GET_ALL_DETAILS"
-                    };
+                    Action = "GET_ALL_DETAILS"
+                };
 
                 // Gửi yêu cầu đến Server
-                Lab03_Bai05_packet response =
-                    await SendPacketAsync(packet);
+                Lab03_Bai05_packet response = await SendPacketAsync(packet);
 
                 // Kiểm tra phản hồi
                 if (response.Action != "DETAILS_RESULT")
                 {
-                    throw new Exception(
-                        "Server trả về dữ liệu không hợp lệ."
-                    );
+                    throw new Exception("Server trả về dữ liệu không hợp lệ.");
                 }
 
                 if (string.IsNullOrWhiteSpace(response.TenMonAn))
@@ -314,36 +299,25 @@ namespace LAB03
                 }
 
                 // Phân tích JSON danh sách
-                using (JsonDocument doc =
-                    JsonDocument.Parse(response.TenMonAn))
+                using (JsonDocument doc = JsonDocument.Parse(response.TenMonAn))
                 {
                     JsonElement root = doc.RootElement;
 
                     if (root.ValueKind != JsonValueKind.Array)
                     {
-                        throw new Exception(
-                            "Dữ liệu danh sách không đúng định dạng."
-                        );
+                        throw new Exception("Dữ liệu danh sách không đúng định dạng.");
                     }
 
-                    List<ListViewItem> danhSach =
-                        new List<ListViewItem>();
+                    List<ListViewItem> danhSach = new List<ListViewItem>();
 
                     foreach (JsonElement element in root.EnumerateArray())
                     {
                         string stt = GetJsonValue(element, "STT");
-                        string nguoi = GetJsonValue(
-                            element, "NguoiDongGop");
+                        string nguoi = GetJsonValue(element, "NguoiDongGop");
+                        string mon = GetJsonValue(element, "TenMonAn");
+                        string time = GetJsonValue(element, "ThoiGian");
 
-                        string mon = GetJsonValue(
-                            element, "TenMonAn");
-
-                        string time = GetJsonValue(
-                            element, "ThoiGian");
-
-                        ListViewItem item =
-                            new ListViewItem(stt);
-
+                        ListViewItem item = new ListViewItem(stt);
                         item.SubItems.Add(nguoi);
                         item.SubItems.Add(mon);
                         item.SubItems.Add(time);
@@ -353,16 +327,11 @@ namespace LAB03
 
                     // Cập nhật giao diện
                     listView1.BeginUpdate();
-
                     try
                     {
                         listView1.Items.Clear();
-
                         listView1.View = View.Details;
-
-                        listView1.Items.AddRange(
-                            danhSach.ToArray()
-                        );
+                        listView1.Items.AddRange(danhSach.ToArray());
                     }
                     finally
                     {
@@ -372,22 +341,13 @@ namespace LAB03
             }
             catch (OperationCanceledException)
             {
-                MessageBox.Show(
-                    "Quá thời gian chờ khi tải danh sách!",
-                    "Thông báo",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
+                MessageBox.Show("Quá thời gian chờ khi tải danh sách!", "Thông báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    "Không thể tải danh sách đóng góp.\n\nLỗi: "
-                    + ex.Message,
-                    "Lỗi",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                MessageBox.Show("Không thể tải danh sách đóng góp.\n\nLỗi: " + ex.Message,
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
