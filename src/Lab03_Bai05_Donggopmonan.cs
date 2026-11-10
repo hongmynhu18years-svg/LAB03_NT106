@@ -12,11 +12,11 @@ using System.Threading.Tasks; // Bắt buộc thêm để dùng Task.Run
 
 namespace LAB03
 {
-    public partial class Donggopmonan : Form
+    public partial class Lab03_Bai05_Donggopmonan : Form
     {
         private string duongDanAnhGoc = "";
 
-        public Donggopmonan()
+        public Lab03_Bai05_Donggopmonan()
         {
             InitializeComponent();
         }
@@ -55,7 +55,7 @@ namespace LAB03
                     base64Image = Convert.ToBase64String(imageArray);
                 }
 
-                Packet p = new Packet
+                Lab03_Bai05_packet p = new Lab03_Bai05_packet
                 {
                     Action = "ADD",
                     TenMonAn = txt_TenMonAnDongGop.Text.Trim(),
@@ -65,7 +65,7 @@ namespace LAB03
 
                 string json = JsonSerializer.Serialize(p);
                 byte[] data = Encoding.UTF8.GetBytes(json);
-                Packet response = null;
+                Lab03_Bai05_packet response = null;
 
                 // ĐẨY LỆNH GỬI/NHẬN MẠNG XUỐNG BACKGROUND THREAD
                 await Task.Run(() =>
@@ -81,7 +81,7 @@ namespace LAB03
                         if (bytesRead > 0)
                         {
                             string jsonResponse = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                            response = JsonSerializer.Deserialize<Packet>(jsonResponse);
+                            response = JsonSerializer.Deserialize<Lab03_Bai05_packet>(jsonResponse);
                         }
                     }
                 });
@@ -120,10 +120,10 @@ namespace LAB03
 
             try
             {
-                Packet p = new Packet { Action = "GET_ALL_DETAILS" };
+                Lab03_Bai05_packet p = new Lab03_Bai05_packet { Action = "GET_ALL_DETAILS" };
                 string jsonRequest = JsonSerializer.Serialize(p);
                 byte[] requestData = Encoding.UTF8.GetBytes(jsonRequest);
-                Packet response = null;
+                Lab03_Bai05_packet response = null;
 
                 // CHẠY NGẦM ĐỂ KHÔNG TREO FORM
                 await Task.Run(() =>
@@ -141,7 +141,7 @@ namespace LAB03
                         if (bytesRead > 0)
                         {
                             string jsonResponse = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                            response = JsonSerializer.Deserialize<Packet>(jsonResponse);
+                            response = JsonSerializer.Deserialize<Lab03_Bai05_packet>(jsonResponse);
                         }
                     }
                 });

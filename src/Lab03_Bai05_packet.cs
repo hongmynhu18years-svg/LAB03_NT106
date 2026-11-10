@@ -2,7 +2,7 @@
 
 namespace LAB03
 {
-    public class Packet
+    public class Lab03_Bai05_packet
     {
         public string Action { get; set; }
         public string TenMonAn { get; set; }

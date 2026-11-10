@@ -1,6 +1,6 @@
 ﻿namespace LAB03
 {
-    partial class Server
+    partial class Lab03_Bai05_server
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Server));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Lab03_Bai05_server));
             start = new Button();
             Rtb_log = new RichTextBox();
             log_server = new Label();

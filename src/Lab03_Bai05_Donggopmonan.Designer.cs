@@ -1,6 +1,6 @@
 ﻿namespace LAB03
 {
-    partial class Donggopmonan
+    partial class Lab03_Bai05_Donggopmonan
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Donggopmonan));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Lab03_Bai05_Donggopmonan));
             listView1 = new ListView();
             column0_stt = new ColumnHeader();
             column1_TenNguoi = new ColumnHeader();

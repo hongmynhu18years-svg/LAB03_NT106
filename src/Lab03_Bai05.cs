@@ -37,7 +37,7 @@ namespace LAB03
             try
             {
                 // 1. Tạo gói tin yêu cầu lấy danh sách
-                Packet p = new Packet { Action = "GET_LIST" };
+                Lab03_Bai05_packet p = new Lab03_Bai05_packet { Action = "GET_LIST" };
                 string jsonRequest = JsonSerializer.Serialize(p);
                 byte[] requestData = Encoding.UTF8.GetBytes(jsonRequest);
 
@@ -54,7 +54,7 @@ namespace LAB03
                     if (bytesRead > 0)
                     {
                         string jsonResponse = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                        Packet response = JsonSerializer.Deserialize<Packet>(jsonResponse);
+                        Lab03_Bai05_packet response = JsonSerializer.Deserialize<Lab03_Bai05_packet>(jsonResponse);
 
                         if (response.Action == "LIST_RESULT" && !string.IsNullOrEmpty(response.TenMonAn))
                         {
@@ -94,7 +94,7 @@ namespace LAB03
 
                 try
                 {
-                    Packet p = new Packet
+                    Lab03_Bai05_packet p = new Lab03_Bai05_packet
                     {
                         Action = "DELETE",
                         TenMonAn = monCanXoa
@@ -102,7 +102,7 @@ namespace LAB03
 
                     string jsonRequest = JsonSerializer.Serialize(p);
                     byte[] requestData = Encoding.UTF8.GetBytes(jsonRequest);
-                    Packet response = null;
+                    Lab03_Bai05_packet response = null;
 
                     // 2. ĐẨY LỆNH GIAO TIẾP MẠNG XUỐNG BACKGROUND THREAD
                     await Task.Run(() =>
@@ -122,7 +122,7 @@ namespace LAB03
                             if (bytesRead > 0)
                             {
                                 string jsonResponse = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                                response = JsonSerializer.Deserialize<Packet>(jsonResponse);
+                                response = JsonSerializer.Deserialize<Lab03_Bai05_packet>(jsonResponse);
                             }
                         }
                     });
@@ -173,14 +173,14 @@ namespace LAB03
 
             try
             {
-                Packet p = new Packet();
+                Lab03_Bai05_packet p = new Lab03_Bai05_packet();
                 p.NguoiDongGop = nguoiDongGop;
                 p.Action = isCongDong ? "RANDOM_ALL" : "RANDOM_MINE";
 
                 string jsonRequest = JsonSerializer.Serialize(p);
                 byte[] requestData = Encoding.UTF8.GetBytes(jsonRequest);
 
-                Packet response = null;
+                Lab03_Bai05_packet response = null;
 
                 // 2. ĐẨY TÁC VỤ MẠNG XUỐNG LUỒNG NGẦM (Không làm đơ Form)
                 await Task.Run(() =>
@@ -197,7 +197,7 @@ namespace LAB03
                         if (bytesRead > 0)
                         {
                             string jsonResponse = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                            response = JsonSerializer.Deserialize<Packet>(jsonResponse);
+                            response = JsonSerializer.Deserialize<Lab03_Bai05_packet>(jsonResponse);
                         }
                     }
                 });
@@ -256,7 +256,7 @@ namespace LAB03
         private async void btnThem_Click(object sender, EventArgs e)
         {
             // Mở form Đóng Góp
-            Donggopmonan frmDongGop = new Donggopmonan();
+            Lab03_Bai05_Donggopmonan frmDongGop = new Lab03_Bai05_Donggopmonan();
             // Dùng ShowDialog() để ứng dụng chờ cho đến khi bạn tắt form Đóng góp đi
             frmDongGop.ShowDialog();
             // Ngay khi form Đóng góp vừa bị tắt, lập tức tự động tải lại Menu ở form chính
@@ -266,10 +266,10 @@ namespace LAB03
         {
             try
             {
-                Packet p = new Packet { Action = "GET_LIST" };
+                Lab03_Bai05_packet p = new Lab03_Bai05_packet { Action = "GET_LIST" };
                 string jsonRequest = JsonSerializer.Serialize(p);
                 byte[] requestData = Encoding.UTF8.GetBytes(jsonRequest);
-                Packet response = null;
+                Lab03_Bai05_packet response = null;
 
                 await Task.Run(() =>
                 {
@@ -284,7 +284,7 @@ namespace LAB03
                         if (bytesRead > 0)
                         {
                             string jsonResponse = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                            response = JsonSerializer.Deserialize<Packet>(jsonResponse);
+                            response = JsonSerializer.Deserialize<Lab03_Bai05_packet>(jsonResponse);
                         }
                     }
                 });
