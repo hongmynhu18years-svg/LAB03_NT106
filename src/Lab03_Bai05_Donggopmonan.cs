@@ -70,7 +70,7 @@ namespace LAB03
                 // Gửi lệnh ngầm xuống background thread
                 await Task.Run(() =>
                 {
-                    using (TcpClient client = new TcpClient("10.139.209.54", 8888))
+                    using (TcpClient client = new TcpClient("10.139.209.155", 8888))
                     {
                         NetworkStream stream = client.GetStream();
                         stream.Write(data, 0, data.Length);
